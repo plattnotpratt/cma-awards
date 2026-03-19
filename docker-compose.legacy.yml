@@ -1,0 +1,7 @@
+web:
+  build:
+    context: .
+    dockerfile: Dockerfile.compat
+  ports:
+    - "8080:80"
+  restart: unless-stopped
