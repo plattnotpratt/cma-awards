@@ -1,4 +1,6 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
+const API_KEY = import.meta.env.VITE_OPEN_WATER_API_KEY;
+const CLIENT_KEY = import.meta.env.VITE_OPEN_WATER_CLIENT_KEY;
 
 export async function apiGet(path, p) {
   if (p === undefined) {
@@ -8,8 +10,8 @@ export async function apiGet(path, p) {
     method: "GET",
     headers: {
       Accept: "application/json",
-      "X-ClientKey": "catholicpress.secure-platform.com",
-      "X-ApiKey": "dac475a4-24c5-41df-b24c-0ce932a72e97",
+      "X-ClientKey": CLIENT_KEY,
+      "X-ApiKey": API_KEY,
       "X-SuppressEmails": "true",
     },
   });
