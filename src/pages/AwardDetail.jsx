@@ -4,11 +4,15 @@ http://localhost:5174/awards/52216 - Honorable Mention
 http://localhost:5174/awards/56106 - Not Selected
 */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef} from "react";
 import { Link, useParams } from "react-router-dom";
 import { getAwardById } from "../api/awards";
 import Loading from "../components/Loading";
 import ErrorState from "../components/ErrorState";
+
+import Title from "../components/Elements/Title";
+import Category from "../components/Elements/Category";
+import Result from "../components/Elements/Result";
 
 /** Small helpers */
 function safeDate(dateStr) {
@@ -172,17 +176,20 @@ export default function AwardDetail() {
   return (
     <section className="awardPage">
       <style>{styles}</style>
+      <Title entryTitle={viewModel.entryTitle} name={viewModel.name} description={viewModel.description} />
+      <Category categoryName={viewModel.categoryName} year={viewModel.year}/>
+      <Result winnerLabel={viewModel.winnerLabel}/>
 
-      <div className="topRow">
+
+      {/* <div className="topRow">
         <OutcomePill isWinner={viewModel.isWinner} winnerTypes={viewModel.winnerTypes} />
-      </div>
-
-      <header className="header">
-        <h1 className="title">{viewModel.entryTitle ?? viewModel.name}</h1>
+      </div> */}
+      {/* <header ref={title} className="header">
+        <h1 className="title word">{viewModel.entryTitle ?? viewModel.name}</h1>
         {viewModel.description ? (
           <p className="muted">{viewModel.description}</p>
         ) : null}
-      </header>
+      </header> */}
 
       <div className="grid">
         {/* Outcome card — changes based on isWinner, with NO "congrats" */}
