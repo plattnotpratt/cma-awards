@@ -4,7 +4,7 @@ http://localhost:5174/awards/52216 - Honorable Mention
 http://localhost:5174/awards/56106 - Not Selected
 */
 
-import React, { useEffect, useMemo, useState, useRef} from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getAwardById } from "../api/awards";
 import Loading from "../components/Loading";
@@ -13,6 +13,7 @@ import ErrorState from "../components/ErrorState";
 import Title from "../components/Elements/Title";
 import Category from "../components/Elements/Category";
 import Result from "../components/Elements/Result";
+import WinnerStatus from "../components/Elements/WinnerStatus";
 
 /** Small helpers */
 function safeDate(dateStr) {
@@ -177,8 +178,8 @@ export default function AwardDetail() {
     <section className="awardPage">
       <style>{styles}</style>
       <Title entryTitle={viewModel.entryTitle} name={viewModel.name} description={viewModel.description} />
-      <Category categoryName={viewModel.categoryName} year={viewModel.year}/>
-      <Result winnerLabel={viewModel.winnerLabel}/>
+      <Category categoryName={viewModel.categoryName} year={viewModel.year} />
+      <Result winnerLabel={viewModel.winnerLabel} />
 
 
       {/* <div className="topRow">
@@ -309,6 +310,7 @@ export default function AwardDetail() {
           </div>
         </HoverCard>
       </div>
+      <WinnerStatus status={viewModel.winnerLabel} />
     </section>
   );
 }
