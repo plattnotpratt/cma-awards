@@ -50,6 +50,12 @@ a:hover {
   padding: 16px;
 }
 
+.awardDetailPage {
+  background:
+    radial-gradient(900px circle at 12% -10%, rgba(28, 95, 122, 0.12), transparent 55%),
+    linear-gradient(180deg, rgba(246, 242, 234, 0.95), rgba(255, 255, 255, 0.9));
+}
+
 /* Top bar: paper with subtle border + blur */
 .topBar {
   border-bottom: 1px solid var(--border);

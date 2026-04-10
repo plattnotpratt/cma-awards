@@ -1,0 +1,144 @@
+.awardNotes {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(32px, 8vh, 120px) 16px 80px;
+}
+
+.awardNotes__intro {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.awardNotes__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  font-size: 12px;
+  margin-bottom: 12px;
+  color: rgba(18, 62, 87, 0.75);
+}
+
+.awardNotes__intro h2 {
+  margin: 0 0 10px;
+  font-size: clamp(24px, 4vw, 36px);
+  color: var(--cma-navy-2);
+}
+
+.awardNotes__intro p {
+  margin: 4px auto;
+  max-width: 520px;
+  color: rgba(18, 62, 87, 0.75);
+}
+
+.awardNotes__grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.programCard {
+  border-radius: 18px;
+  border: 1px solid rgba(18, 62, 87, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 14px 36px rgba(11, 31, 42, 0.12);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.programCard h3 {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 13px;
+  color: rgba(18, 62, 87, 0.75);
+}
+
+.programCard dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.programCard dl > div {
+  display: grid;
+  gap: 4px;
+}
+
+.programCard dt {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(18, 62, 87, 0.55);
+}
+
+.programCard dd {
+  margin: 0;
+  font-size: 15px;
+  color: var(--cma-navy-2);
+  word-break: break-word;
+}
+
+.programCard--links {
+  grid-column: span 2;
+}
+
+.programCard__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.programLink {
+  flex: 1 1 180px;
+  text-align: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(18, 62, 87, 0.18);
+  color: var(--cma-navy-2);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 11px;
+  text-decoration: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(246, 242, 234, 0.8));
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.programLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(11, 31, 42, 0.2);
+}
+
+.programCard__empty {
+  font-size: 13px;
+  color: rgba(18, 62, 87, 0.55);
+}
+
+.awardNotes__footer {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.awardNotes__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 62, 87, 0.2);
+  text-decoration: none;
+  color: var(--cma-navy);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 720px) {
+  .programCard--links {
+    grid-column: span 1;
+  }
+
+  .programLink {
+    flex: 1 1 100%;
+  }
+}

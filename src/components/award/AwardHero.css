@@ -1,0 +1,267 @@
+:root {
+  --stage-paper: #fdf7ef;
+  --stage-wash: #f4ebda;
+  --stage-ink: #142e3b;
+  --stage-gold: #c79a4a;
+  --stage-gold-deep: #a77b2d;
+}
+
+.awardHero {
+  position: relative;
+  min-height: 90vh;
+  padding: clamp(32px, 12vh, 120px) clamp(16px, 6vw, 80px) 80px;
+  color: var(--stage-ink);
+  overflow: hidden;
+  border-bottom-left-radius: 48px;
+  border-bottom-right-radius: 48px;
+  background:
+    radial-gradient(140% 110% at 50% -15%, rgba(199, 154, 74, 0.35), transparent 65%),
+    radial-gradient(80% 120% at 15% 5%, rgba(28, 95, 122, 0.2), transparent 70%),
+    linear-gradient(180deg, var(--stage-paper), #f1e4d0 65%, #e8dbc2);
+  box-shadow: 0 18px 60px rgba(15, 32, 43, 0.14);
+}
+
+.awardHero__backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.awardHero__beam {
+  position: absolute;
+  top: -10%;
+  width: 45%;
+  height: 130%;
+  background: radial-gradient(circle, rgba(255, 238, 210, 0.65), rgba(255, 255, 255, 0));
+  opacity: 0.4;
+  filter: blur(8px);
+  transform: rotate(-4deg);
+}
+
+.awardHero__beam--left {
+  left: -10%;
+}
+
+.awardHero__beam--right {
+  right: -10%;
+  transform: rotate(6deg);
+}
+
+.awardHero__sparkles {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.6) 0%, transparent 45%),
+    radial-gradient(circle at 80% 15%, rgba(255, 255, 255, 0.4) 0%, transparent 45%),
+    radial-gradient(circle at 60% 70%, rgba(199, 154, 74, 0.35) 0%, transparent 40%);
+  animation: sparkPulse 16s ease-in-out infinite;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+
+@keyframes sparkPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+.awardHero__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(18px, 3vw, 40px);
+}
+
+.categoryMarquee {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.9;
+}
+
+.categoryMarquee__eyebrow {
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: 0.4em;
+  color: rgba(20, 46, 59, 0.7);
+}
+
+.categoryMarquee__title {
+  margin: 0;
+  font-size: clamp(28px, 8vw, 64px);
+  font-weight: 500;
+  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  line-height: 1;
+  color: var(--stage-ink);
+  text-wrap: balance;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  letter-spacing: 0.08em;
+}
+
+.categoryMarquee__path {
+  margin: 10px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  opacity: 0.6;
+}
+
+.recipientSpotlight {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  text-align: center;
+  padding: clamp(16px, 4vw, 40px);
+}
+
+.recipientSpotlight__glare {
+  position: absolute;
+  inset: 12% 10% auto 10%;
+  height: 65%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+  filter: blur(22px);
+  opacity: 0.5;
+}
+
+.recipientSpotlight__title {
+  font-size: clamp(30px, 6vw, 72px);
+  font-weight: 600;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  line-height: 1.05;
+  z-index: 1;
+  color: var(--stage-ink);
+}
+
+.recipientSpotlight__org {
+  font-size: clamp(16px, 3vw, 24px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  z-index: 1;
+}
+
+.awardRibbon {
+  align-self: center;
+  justify-self: center;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.94), rgba(236, 219, 190, 0.95));
+  color: #40270a;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 12px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(199, 154, 74, 0.35);
+}
+
+.awardRibbon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
+  transform: translateX(-100%);
+  animation: ribbonShimmer 6s linear infinite;
+}
+
+@keyframes ribbonShimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.awardRibbon--win {
+  background: linear-gradient(120deg, rgba(249, 229, 191, 0.98), rgba(199, 154, 74, 0.92));
+}
+
+.awardRibbon--neutral {
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.78), rgba(185, 160, 106, 0.5));
+}
+
+.awardRibbon__label {
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  font-size: 13px;
+}
+
+.winnerTicker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  border-bottom-left-radius: 48px;
+  border-bottom-right-radius: 48px;
+  background: transparent;
+  z-index: 1;
+}
+
+.winnerTicker::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.92);
+  border-top: 1px solid rgba(20, 46, 59, 0.12);
+  box-shadow: 0 -10px 30px rgba(20, 46, 59, 0.05);
+  z-index: 0;
+}
+
+.winnerTicker__track {
+  position: relative;
+  display: inline-flex;
+  gap: 30px;
+  padding: 14px 32px;
+  min-width: 200%;
+  animation: tickerScroll 22s linear infinite;
+  will-change: transform;
+  z-index: 1;
+}
+
+.winnerTicker__item {
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(20, 46, 59, 0.65);
+}
+
+.winnerTicker__item::after {
+  content: " •";
+  margin-left: 12px;
+  opacity: 0.45;
+}
+
+@keyframes tickerScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 640px) {
+  .awardHero {
+    border-radius: 0 0 32px 32px;
+  }
+
+  .awardRibbon {
+    letter-spacing: 0.2em;
+    padding: 12px 18px;
+  }
+
+  .winnerTicker__track {
+    padding: 10px 0;
+  }
+}

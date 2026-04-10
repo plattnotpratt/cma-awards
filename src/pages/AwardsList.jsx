@@ -1,51 +1,20 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { getAwards } from "../api/awards";
 import Loading from "../components/Loading";
 import ErrorState from "../components/ErrorState";
+import { useAwards } from "../hooks/useAwards";
 
 export default function AwardsList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const q = searchParams.get("q") ?? "";
 
-  const [items, setItems] = useState([]);
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    let alive = true;
-
-    async function run() {
-      setStatus("loading");
-      setError(null);
-      try {
-        const data = await getAwards("?startedAtUtc=2025-11-03T12%3A00%3A00Z&pageSize=1000"); // expects array
-        if (!alive) return;
-        if(Array.isArray(data)){
-          for(let i = 0; i < data.length; i++){
-            
-          }
-        }
-        setItems(Array.isArray(data) ? data : data?.items ?? []);
-        setStatus("success");
-      } catch (e) {
-        if (!alive) return;
-        setError(e);
-        setStatus("error");
-      }
-    }
-
-    run();
-    return () => {
-      alive = false;
-    };
-  }, []);
+  const { awards, status, error } = useAwards("?startedAtUtc=2025-11-03T12%3A00%3A00Z&pageSize=1000");
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    if (!needle) return items;
-    return items.filter((a) => (a?.name ?? "").toLowerCase().includes(needle));
-  }, [items, q]);
+    if (!needle) return awards;
+    return awards.filter((a) => (a?.name ?? "").toLowerCase().includes(needle));
+  }, [awards, q]);
 
   if (status === "loading") return <Loading label="Loading awards..." />;
   if (status === "error") return <ErrorState error={error} />;
