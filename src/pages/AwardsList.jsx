@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import ErrorState from "../components/ErrorState";

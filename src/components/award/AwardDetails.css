@@ -17,12 +17,6 @@
   color: rgba(18, 62, 87, 0.75);
 }
 
-.awardNotes__intro h2 {
-  margin: 0 0 10px;
-  font-size: clamp(24px, 4vw, 36px);
-  color: var(--cma-navy-2);
-}
-
 .awardNotes__intro p {
   margin: 4px auto;
   max-width: 520px;
@@ -112,25 +106,6 @@
 .programCard__empty {
   font-size: 13px;
   color: rgba(18, 62, 87, 0.55);
-}
-
-.awardNotes__footer {
-  margin-top: 40px;
-  text-align: center;
-}
-
-.awardNotes__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  padding: 12px 18px;
-  border-radius: 999px;
-  border: 1px solid rgba(18, 62, 87, 0.2);
-  text-decoration: none;
-  color: var(--cma-navy);
-  background: rgba(255, 255, 255, 0.8);
 }
 
 @media (max-width: 720px) {

@@ -1,4 +1,3 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
 const API_KEY = import.meta.env.VITE_OPEN_WATER_API_KEY;
 const CLIENT_KEY = import.meta.env.VITE_OPEN_WATER_CLIENT_KEY;
 

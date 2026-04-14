@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import "./AwardDetails.css";
 
 function formatDate(dateStr) {
@@ -90,12 +89,6 @@ export default function AwardDetails({ award }) {
             {!links.some((link) => link.href) ? <span className="programCard__empty">No public links available.</span> : null}
           </div>
         </article>
-      </div>
-
-      <div className="awardNotes__footer">
-        <Link to="/awards" className="awardNotes__back">
-          ← Browse all awards
-        </Link>
       </div>
     </section>
   );

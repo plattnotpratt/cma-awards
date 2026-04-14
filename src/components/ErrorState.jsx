@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function ErrorState({ error }) {
   return (
     <div className="card">
