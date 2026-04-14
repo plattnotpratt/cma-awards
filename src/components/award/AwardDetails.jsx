@@ -60,8 +60,6 @@ export default function AwardDetails({ award }) {
     <section className="awardNotes">
       <div className="awardNotes__intro">
         <p className="awardNotes__eyebrow">Program Notes</p>
-        <h2>Additional record</h2>
-        <p>Details for administrators and historians. The presentation lives above; reference this section when you need the paperwork.</p>
       </div>
 
       <div className="awardNotes__grid">
