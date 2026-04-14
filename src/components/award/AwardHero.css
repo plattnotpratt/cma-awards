@@ -182,12 +182,33 @@
   }
 }
 
-.awardRibbon--win {
+.awardRibbon--gold {
   background: linear-gradient(120deg, rgba(249, 229, 191, 0.98), rgba(199, 154, 74, 0.92));
+  border-color: rgba(199, 154, 74, 0.45);
+  color: #40270a;
+}
+
+.awardRibbon--silver {
+  background: linear-gradient(120deg, rgba(247, 248, 250, 0.98), rgba(175, 184, 194, 0.9));
+  border-color: rgba(142, 152, 164, 0.42);
+  color: #24303b;
+}
+
+.awardRibbon--bronze {
+  background: linear-gradient(120deg, rgba(239, 212, 190, 0.98), rgba(165, 101, 63, 0.9));
+  border-color: rgba(145, 88, 54, 0.42);
+  color: #3f2315;
+}
+
+.awardRibbon--mention {
+  background: linear-gradient(120deg, rgba(241, 248, 245, 0.98), rgba(149, 196, 189, 0.92));
+  border-color: rgba(28, 95, 122, 0.28);
+  color: #173847;
 }
 
 .awardRibbon--neutral {
   background: linear-gradient(120deg, rgba(255, 255, 255, 0.78), rgba(185, 160, 106, 0.5));
+  border-color: rgba(199, 154, 74, 0.35);
 }
 
 .awardRibbon__label {
@@ -253,7 +274,15 @@
 
 @media (max-width: 640px) {
   .awardHero {
-    border-radius: 0 0 32px 32px;
+    border-bottom-left-radius: 32px;
+    border-bottom-right-radius: 32px;
+  }
+
+  .awardHero__backdrop,
+  .winnerTicker,
+  .winnerTicker::before {
+    border-bottom-left-radius: 32px;
+    border-bottom-right-radius: 32px;
   }
 
   .awardRibbon {
