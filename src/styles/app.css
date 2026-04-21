@@ -118,6 +118,242 @@ a:hover {
   box-shadow: 0 10px 26px var(--shadow);
 }
 
+.browserPage {
+  display: grid;
+  gap: 16px;
+}
+
+.browserHero,
+.browserPanel,
+.browserResults {
+  margin-top: 0;
+}
+
+.browserHero__eyebrow,
+.browserResults__eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 12px;
+  color: rgba(18, 62, 87, 0.72);
+}
+
+.browserHero h1,
+.browserPanel h2,
+.browserResults h2 {
+  margin: 0;
+}
+
+.browserHero__row {
+  align-items: end;
+}
+
+.browserWorkspace {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+  align-items: start;
+}
+
+.browserWorkspace--stacked {
+  grid-template-columns: 1fr;
+}
+
+.browserGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.browserGrid--selectors {
+  align-items: start;
+}
+
+.browserPanel__header,
+.browserResults__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.browserPanel__count {
+  display: inline-flex;
+  min-width: 32px;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(18, 62, 87, 0.08);
+  color: var(--cma-navy-2);
+  font-size: 12px;
+}
+
+.browserPanel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.browserPanel--compact {
+  min-height: auto;
+  overflow: visible;
+}
+
+.browserPanel--scrollable {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.browserList {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  align-content: start;
+}
+
+.browserList--scrollable {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.browserList__item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--cma-ink);
+  text-align: left;
+  cursor: pointer;
+  align-self: start;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.browserList__item:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-2);
+  box-shadow: 0 14px 32px rgba(11, 31, 42, 0.12);
+}
+
+.browserList__item--active {
+  border-color: rgba(28, 95, 122, 0.45);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(246, 242, 234, 0.9));
+}
+
+.browserList__meta {
+  color: rgba(18, 62, 87, 0.7);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.browserResults__list {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+  display: grid;
+  gap: 12px;
+}
+
+.browserResults {
+  position: static;
+  max-height: none;
+  overflow: visible;
+}
+
+.browserResults__list li {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.browserResults__titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.resultBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.resultBadge--gold {
+  background: rgba(199, 154, 74, 0.18);
+  color: #664513;
+}
+
+.resultBadge--silver {
+  background: rgba(160, 171, 186, 0.2);
+  color: #34414c;
+}
+
+.resultBadge--bronze {
+  background: rgba(180, 122, 84, 0.18);
+  color: #683b1e;
+}
+
+.resultBadge--mention {
+  background: rgba(28, 95, 122, 0.12);
+  color: #174356;
+}
+
+.resultBadge--neutral {
+  background: rgba(18, 62, 87, 0.08);
+  color: var(--cma-navy-2);
+}
+
+@media (max-width: 900px) {
+  .browserWorkspace {
+    grid-template-columns: 1fr;
+  }
+
+  .browserGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .browserPanel,
+  .browserResults {
+    min-height: unset;
+    max-height: none;
+    position: static;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 640px) {
+  .browserHero__row,
+  .browserResults__titleRow,
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .input {
+    width: 100%;
+    max-width: none;
+  }
+
+  .browserList__item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 /* Code: “ink on paper” */
 .code {
   overflow: auto;

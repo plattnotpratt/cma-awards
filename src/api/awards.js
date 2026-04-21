@@ -1,9 +1,7 @@
-import { apiGet } from "./client";
+import { apiGet, localApiGet } from "./client";
 
-// Adjust endpoints to match your API:
-export function getAwards(params) {
-  if (params === undefined) params = "";
-  return apiGet(`/Applications${params}`);
+export function getAwards() {
+  return localApiGet("/awards");
 }
 
 export function getAwardById(id) {
