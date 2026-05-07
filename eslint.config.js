@@ -5,14 +5,27 @@ import reactRefresh from "eslint-plugin-react-refresh"
 import { defineConfig, globalIgnores } from "eslint/config"
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores([
+    "dist",
+    "node_modules",
+    ".venv",
+    ".venv/**",
+    ".venv_sys",
+    ".venv_sys/**",
+    "scripts/.venv",
+    "scripts/.venv/**",
+    "scripts/__pycache__",
+    "scripts/__pycache__/**",
+  ]),
   {
     files: ["**/*.{js,jsx}"],
     extends: [
       js.configs.recommended,
-      reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
+    plugins: {
+      "react-hooks": reactHooks,
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -23,6 +36,8 @@ export default defineConfig([
       },
     },
     rules: {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
       "no-unused-vars": ["error", { varsIgnorePattern: "^[A-Z_]", argsIgnorePattern: "^_" }],
     },
   },

@@ -1,95 +1,98 @@
+import { useState } from "react";
 import "./AwardDetails.css";
 
-function formatDate(dateStr) {
-  if (!dateStr) return null;
-  const date = new Date(dateStr);
-  if (Number.isNaN(date.getTime())) return null;
-  return date.toLocaleString(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
-
 export default function AwardDetails({ award }) {
+  const [shareStatus, setShareStatus] = useState("");
+
   if (!award) return null;
 
-  const submitter = [award.submitterFirst, award.submitterLast].filter(Boolean).join(" ");
+  const shareUrl = typeof window === "undefined" ? "" : `${window.location.origin}${window.location.pathname}`;
+  const shareTitle = [award.entryTitle, award.winnerLabel].filter(Boolean).join(" - ") || "CMA Award Winner";
+  const shareSummary = [award.entryTitle, award.winnerLabel, award.categoryName, award.year]
+    .filter(Boolean)
+    .join(" | ");
+  const shareText = `${shareSummary}\n${shareUrl}`;
 
-  const cards = [
-    {
-      title: "Overview",
-      items: [
-        { label: "Round", value: award.roundName },
-        { label: "Status", value: award.status },
-        { label: "Finalized", value: formatDate(award.finalizedAtUtc) },
-      ],
-    },
-    {
-      title: "Entry",
-      items: [
-        { label: "Publisher", value: award.publisher },
-        { label: "Type", value: award.publishingType },
-        { label: "Work date", value: award.workDate },
-        { label: "Byline", value: award.byline },
-      ],
-    },
-    {
-      title: "Submitter",
-      items: [
-        { label: "Name", value: submitter },
-        { label: "Email", value: award.submitterEmail },
-      ],
-    },
-    {
-      title: "Scores",
-      items: [
-        { label: "Average", value: award.avgScore ?? "—" },
-        { label: "Total", value: award.totalScore ?? "—" },
-      ],
-    },
-  ];
+  async function copyShareText() {
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setShareStatus("Award details copied. Paste them into your post.");
+        return true;
+      } catch {
+        // Fall through to the textarea copy path for older Safari/iOS contexts.
+      }
+    }
 
-  const links = [
-    { label: "View submission", href: award.publicUrlToSubmission },
-    { label: "Gallery", href: award.publicGalleryUrl },
-    { label: "Download PDF", href: award.publicDownloadPdfAsApplicantUrl },
-  ];
+    const textArea = document.createElement("textarea");
+    textArea.value = shareText;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    textArea.style.top = "0";
+    document.body.append(textArea);
+    textArea.focus();
+    textArea.select();
+    textArea.setSelectionRange(0, textArea.value.length);
+
+    try {
+      const copied = document.execCommand("copy");
+      if (!copied) throw new Error("Copy command failed");
+
+      setShareStatus("Award details copied. Paste them into your post.");
+      return true;
+    } catch {
+      setShareStatus("Sharing is not available in this browser. Copy the page URL from Safari's address bar.");
+      return false;
+    } finally {
+      textArea.remove();
+    }
+  }
+
+  async function handleNativeShare() {
+    const shareData = { title: shareTitle, text: shareSummary, url: shareUrl };
+
+    if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+      try {
+        await navigator.share(shareData);
+        setShareStatus("Share sheet opened.");
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") return;
+      }
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ url: shareUrl });
+        setShareStatus("Share sheet opened.");
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") return;
+      }
+    }
+
+    await copyShareText();
+  }
 
   return (
     <section className="awardNotes">
-      <div className="awardNotes__intro">
-        <p className="awardNotes__eyebrow">Program Notes</p>
+      <div className="awardGalleryCta">
+        {award.publicGalleryUrl ? (
+          <a className="awardGalleryCta__button" href={award.publicGalleryUrl} target="_blank" rel="noreferrer">
+            View Gallery
+          </a>
+        ) : (
+          <span className="awardGalleryCta__empty">Gallery unavailable</span>
+        )}
       </div>
 
-      <div className="awardNotes__grid">
-        {cards.map((card) => (
-          <article className="programCard" key={card.title}>
-            <h3>{card.title}</h3>
-            <dl>
-              {card.items.map((item) => (
-                <div key={`${card.title}-${item.label}`}>
-                  <dt>{item.label}</dt>
-                  <dd>{item.value ?? "—"}</dd>
-                </div>
-              ))}
-            </dl>
-          </article>
-        ))}
-
-        <article className="programCard programCard--links">
-          <h3>Links</h3>
-          <div className="programCard__links">
-            {links.map((link) =>
-              link.href ? (
-                <a className="programLink" key={link.label} href={link.href} target="_blank" rel="noreferrer">
-                  {link.label}
-                </a>
-              ) : null
-            )}
-            {!links.some((link) => link.href) ? <span className="programCard__empty">No public links available.</span> : null}
-          </div>
-        </article>
+      <div className="awardShareLinks" aria-label="Share this award">
+        <button className="awardShareLinks__item" type="button" onClick={handleNativeShare}>
+          Share
+        </button>
       </div>
+      {shareStatus ? <p className="awardShareLinks__status">{shareStatus}</p> : null}
     </section>
   );
 }

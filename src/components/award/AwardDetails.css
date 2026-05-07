@@ -1,119 +1,88 @@
 .awardNotes {
   max-width: 1100px;
   margin: 0 auto;
-  padding: clamp(32px, 8vh, 120px) 16px 80px;
+  padding: clamp(32px, 8vh, 96px) 16px 80px;
 }
 
-.awardNotes__intro {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.awardNotes__eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.35em;
-  font-size: 12px;
-  margin-bottom: 12px;
-  color: rgba(18, 62, 87, 0.75);
-}
-
-.awardNotes__intro p {
-  margin: 4px auto;
-  max-width: 520px;
-  color: rgba(18, 62, 87, 0.75);
-}
-
-.awardNotes__grid {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-
-.programCard {
-  border-radius: 18px;
-  border: 1px solid rgba(18, 62, 87, 0.12);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 14px 36px rgba(11, 31, 42, 0.12);
-  padding: 20px;
+.awardGalleryCta {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  justify-content: center;
 }
 
-.programCard h3 {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 13px;
-  color: rgba(18, 62, 87, 0.75);
-}
-
-.programCard dl {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-}
-
-.programCard dl > div {
-  display: grid;
-  gap: 4px;
-}
-
-.programCard dt {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: rgba(18, 62, 87, 0.55);
-}
-
-.programCard dd {
-  margin: 0;
-  font-size: 15px;
+.awardGalleryCta__button,
+.awardGalleryCta__empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: min(100%, 190px);
+  min-height: 46px;
+  padding: 11px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 62, 87, 0.18);
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.96), rgba(246, 242, 234, 0.88)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 242, 234, 0.8));
+  box-shadow: 0 12px 30px rgba(11, 31, 42, 0.12);
   color: var(--cma-navy-2);
-  word-break: break-word;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
 }
 
-.programCard--links {
-  grid-column: span 2;
+.awardGalleryCta__button:hover {
+  filter: brightness(1.04);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 42px rgba(11, 31, 42, 0.16);
+  text-decoration: none;
 }
 
-.programCard__links {
+.awardGalleryCta__empty {
+  opacity: 0.72;
+}
+
+.awardShareLinks {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
 }
 
-.programLink {
-  flex: 1 1 180px;
-  text-align: center;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(18, 62, 87, 0.18);
-  color: var(--cma-navy-2);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
+.awardShareLinks__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 112px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 62, 87, 0.14);
+  background: rgba(255, 255, 255, 0.68);
+  color: rgba(18, 62, 87, 0.78);
+  cursor: pointer;
   font-size: 11px;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   text-decoration: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(246, 242, 234, 0.8));
-  transition: transform 160ms ease, box-shadow 160ms ease;
+  transition: border-color 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
-.programLink:hover {
+.awardShareLinks__item:hover {
+  border-color: rgba(185, 160, 106, 0.55);
+  color: var(--cma-navy-2);
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(11, 31, 42, 0.2);
+  box-shadow: 0 12px 28px rgba(11, 31, 42, 0.12);
+  text-decoration: none;
 }
 
-.programCard__empty {
+.awardShareLinks__status {
+  margin: 12px 0 0;
+  color: rgba(18, 62, 87, 0.68);
   font-size: 13px;
-  color: rgba(18, 62, 87, 0.55);
-}
-
-@media (max-width: 720px) {
-  .programCard--links {
-    grid-column: span 1;
-  }
-
-  .programLink {
-    flex: 1 1 100%;
-  }
+  text-align: center;
 }

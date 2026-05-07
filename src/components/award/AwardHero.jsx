@@ -23,7 +23,8 @@ export default function AwardHero({ hero }) {
         <AwardRibbon label={hero.placement} isWinner={hero.isWinner} />
       </div>
 
-      <WinnerTicker text={hero.placement} year={hero.year} />
+      <WinnerTicker text={hero.placement} year={hero.year} position="top" />
+      <WinnerTicker text={hero.placement} year={hero.year} position="bottom" />
     </section>
   );
 }

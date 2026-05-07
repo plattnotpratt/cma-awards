@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch placed applications for a program and store them in SQLite."""
+"""Fetch placed applications for one or more programs and store them in SQLite."""
 
 from __future__ import annotations
 
@@ -32,9 +32,15 @@ PLACED_TABLE = "placed_applications"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Fetch placed applications for a program from OpenWater and store them in SQLite.",
+        description="Fetch placed applications for one or more OpenWater programs and store them in SQLite.",
     )
-    parser.add_argument("--program-id", type=int, required=True, help="OpenWater program id to fetch")
+    parser.add_argument(
+        "--program-id",
+        type=int,
+        action="append",
+        required=True,
+        help="OpenWater program id to fetch. Repeat the flag to fetch multiple programs.",
+    )
     parser.add_argument(
         "--db",
         default="placed_applications.db",
@@ -300,9 +306,24 @@ def ensure_parent_dir(db_path: Path) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
 
 
+def unique_program_ids(program_ids: list[int]) -> list[int]:
+    seen: set[int] = set()
+    unique_ids: list[int] = []
+
+    for program_id in program_ids:
+        if program_id in seen:
+            continue
+
+        seen.add(program_id)
+        unique_ids.append(program_id)
+
+    return unique_ids
+
+
 def main() -> int:
     args = parse_args()
     headers = load_environment()
+    program_ids = unique_program_ids(args.program_id)
 
     if args.page_size <= 0:
         raise SystemExit("--page-size must be greater than 0")
@@ -316,7 +337,20 @@ def main() -> int:
     session.headers.update(headers)
 
     try:
-        application_ids = iter_application_ids(session, args.program_id, args.page_size, args.max_pages)
+        application_ids_by_program: dict[int, list[int]] = {}
+        seen_application_ids: set[int] = set()
+        application_ids: list[int] = []
+
+        for program_id in program_ids:
+            ids = iter_application_ids(session, program_id, args.page_size, args.max_pages)
+            application_ids_by_program[program_id] = ids
+
+            for application_id in ids:
+                if application_id in seen_application_ids:
+                    continue
+
+                seen_application_ids.add(application_id)
+                application_ids.append(application_id)
     except requests.HTTPError as exc:
         raise SystemExit(f"Failed to fetch application list: {exc}") from exc
 
@@ -359,8 +393,10 @@ def main() -> int:
 
         conn.commit()
 
-    print(f"Program {args.program_id}")
-    print(f"Applications discovered: {len(application_ids)}")
+    print(f"Programs: {', '.join(str(program_id) for program_id in program_ids)}")
+    for program_id in program_ids:
+        print(f"Program {program_id} applications discovered: {len(application_ids_by_program[program_id])}")
+    print(f"Applications discovered (unique): {len(application_ids)}")
     print(f"Applications processed: {processed}")
     print(f"Placed rows written: {placed}")
     print(f"Skipped not placed: {skipped}")

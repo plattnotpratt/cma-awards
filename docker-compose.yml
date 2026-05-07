@@ -3,6 +3,8 @@ services:
     build:
       context: .
       target: api
+    env_file:
+      - .env
     restart: unless-stopped
 
   web:
