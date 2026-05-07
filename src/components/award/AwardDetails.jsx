@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./AwardDetails.css";
 
 export default function AwardDetails({ award }) {
@@ -91,6 +92,9 @@ export default function AwardDetails({ award }) {
         <button className="awardShareLinks__item" type="button" onClick={handleNativeShare}>
           Share
         </button>
+        <Link className="awardShareLinks__item" to="/awards">
+          Awards List
+        </Link>
       </div>
       {shareStatus ? <p className="awardShareLinks__status">{shareStatus}</p> : null}
     </section>

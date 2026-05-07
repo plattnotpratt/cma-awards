@@ -8,15 +8,14 @@ function resultTone(type) {
   return "resultBadge--neutral";
 }
 
-export default function CategoryResults({ program, division, category }) {
+export default function CategoryResults({ category, resultsRef }) {
   return (
-    <section className="browserResults card">
+    <section className="browserResults card" ref={resultsRef}>
       <div className="browserResults__header">
         <div>
-          <p className="browserResults__eyebrow">Category Results</p>
           <h2>{category?.name ?? "Select a category"}</h2>
           <p className="muted">
-            {category ? `${program.name} / ${division.name} / ${category.name}` : "Choose a program, division, and category to see the winners list."}
+            {category ? "Winners listed in placement order." : "Choose a program, division, and category to see the winners list."}
           </p>
         </div>
       </div>

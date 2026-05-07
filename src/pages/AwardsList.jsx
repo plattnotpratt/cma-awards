@@ -15,9 +15,12 @@ export default function AwardsList() {
   const activeCategoryName = searchParams.get("category") ?? "";
 
   const { awards, status, error } = useAwards("?startedAtUtc=2025-11-03T12%3A00%3A00Z&pageSize=1000");
-  const [categoryPanelHeight, setCategoryPanelHeight] = useState(null);
+  const [selectorPanelHeight, setSelectorPanelHeight] = useState(null);
+  const searchInputRef = useRef(null);
   const programPanelRef = useRef(null);
   const divisionPanelRef = useRef(null);
+  const categoryPanelRef = useRef(null);
+  const resultsRef = useRef(null);
 
   const hierarchy = useMemo(() => buildAwardsHierarchy(awards, q), [awards, q]);
 
@@ -36,11 +39,13 @@ export default function AwardsList() {
   }, [activeDivision, activeCategoryName]);
 
   useLayoutEffect(() => {
+    if (status !== "success") return;
+    searchInputRef.current?.focus({ preventScroll: true });
+  }, [status]);
+  useLayoutEffect(() => {
     function updateHeight() {
       const programHeight = programPanelRef.current?.offsetHeight ?? 0;
-      const divisionHeight = divisionPanelRef.current?.offsetHeight ?? 0;
-      const nextHeight = Math.max(programHeight, divisionHeight);
-      setCategoryPanelHeight(nextHeight > 0 ? nextHeight : null);
+      setSelectorPanelHeight(programHeight > 0 ? programHeight : null);
     }
 
     updateHeight();
@@ -50,10 +55,9 @@ export default function AwardsList() {
     const observer = new ResizeObserver(() => updateHeight());
 
     if (programPanelRef.current) observer.observe(programPanelRef.current);
-    if (divisionPanelRef.current) observer.observe(divisionPanelRef.current);
 
     return () => observer.disconnect();
-  }, [activeProgram, activeDivision, q, hierarchy.length]);
+  }, [q, hierarchy.length]);
 
   function updateParams(next) {
     const merged = new URLSearchParams(searchParams);
@@ -66,28 +70,34 @@ export default function AwardsList() {
     setSearchParams(merged);
   }
 
+  function scrollToNextSection(ref) {
+    if (!window.matchMedia("(max-width: 900px)").matches) return;
+
+    requestAnimationFrame(() => {
+      ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   if (status === "loading") return <Loading label="Loading awards hierarchy..." />;
   if (status === "error") return <ErrorState error={error} />;
 
   return (
     <section className="browserPage">
       <div className="browserHero card">
-        <div className="row browserHero__row">
-          <div>
-            <p className="browserHero__eyebrow">Awards Browser</p>
-            <h1>Program to Category View</h1>
-            <p className="muted">
-              Sample frontend organization for awards grouped as program, division, and category with winners listed in placement order.
-            </p>
-          </div>
+        <div className="browserHero__image" aria-hidden="true">
+          <span>Hero Image Placeholder</span>
+        </div>
 
+        <div className="browserHero__content">
           <input
-            className="input"
+            id="awards-search"
+            ref={searchInputRef}
+            className="input browserHero__searchInput"
             value={q}
             onChange={(event) => {
               updateParams({ q: event.target.value, program: "", division: "", category: "" });
             }}
-            placeholder="Search across all programs..."
+            placeholder="Search awards, winners, publishers, categories..."
             aria-label="Search awards"
           />
         </div>
@@ -102,7 +112,10 @@ export default function AwardsList() {
             activeValue={activeProgram?.name ?? ""}
             emptyLabel="No programs matched your search."
             getCountLabel={(item) => `${item.awardCount} entries`}
-            onSelect={(programName) => updateParams({ program: programName, division: "", category: "" })}
+            onSelect={(programName) => {
+              updateParams({ program: programName, division: "", category: "" });
+              scrollToNextSection(divisionPanelRef);
+            }}
             compact
           />
 
@@ -113,23 +126,31 @@ export default function AwardsList() {
             activeValue={activeDivision?.name ?? ""}
             emptyLabel="Select a program to browse its divisions."
             getCountLabel={(item) => `${item.awardCount} entries`}
-            onSelect={(divisionName) => updateParams({ division: divisionName, category: "" })}
-            compact
+            onSelect={(divisionName) => {
+              updateParams({ division: divisionName, category: "" });
+              scrollToNextSection(categoryPanelRef);
+            }}
+            scrollable
+            style={selectorPanelHeight ? { height: `${selectorPanelHeight}px` } : undefined}
           />
 
           <HierarchyPanel
+            panelRef={categoryPanelRef}
             title="Categories"
             items={activeDivision?.categories ?? []}
             activeValue={activeCategory?.name ?? ""}
             emptyLabel="Select a division to browse its categories."
             getCountLabel={(item) => `${item.awardCount} listed`}
-            onSelect={(categoryName) => updateParams({ category: categoryName })}
+            onSelect={(categoryName) => {
+              updateParams({ category: categoryName });
+              scrollToNextSection(resultsRef);
+            }}
             scrollable
-            style={categoryPanelHeight ? { height: `${categoryPanelHeight}px` } : undefined}
+            style={selectorPanelHeight ? { height: `${selectorPanelHeight}px` } : undefined}
           />
         </div>
 
-        <CategoryResults program={activeProgram} division={activeDivision} category={activeCategory} />
+        <CategoryResults category={activeCategory} resultsRef={resultsRef} />
       </div>
     </section>
   );
