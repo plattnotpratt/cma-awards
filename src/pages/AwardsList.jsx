@@ -7,6 +7,25 @@ import HierarchyPanel from "../components/browser/HierarchyPanel";
 import { useAwards } from "../hooks/useAwards";
 import { buildAwardsHierarchy } from "../utils/awardHierarchy";
 
+const HERO_SLIDES = [
+  {
+    image: "/cma-slider-awardWinner-01.jpg",
+    alt: "Awards celebration slide one",
+  },
+  {
+    image: "/cma-slider-awardWinner-03.jpg",
+    alt: "Awards celebration slide two",
+  },
+  {
+    image: "/cma-slider-awardWinner-02-selfie.jpg",
+    alt: "Awards celebration slide three",
+  },
+  {
+    image: "/cma-slider-awardWinner-01.jpg",
+    alt: "Awards celebration slide four",
+  },
+];
+
 export default function AwardsList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const q = searchParams.get("q") ?? "";
@@ -85,7 +104,17 @@ export default function AwardsList() {
     <section className="browserPage">
       <div className="browserHero card">
         <div className="browserHero__image" aria-hidden="true">
-          <span>Hero Image Placeholder</span>
+          <div className="browserHero__slider">
+            {HERO_SLIDES.map((slide, index) => (
+              <div
+                className="browserHero__slide"
+                key={slide.alt}
+                style={slide.image ? { backgroundImage: `url(${slide.image})` } : undefined}
+              >
+                {!slide.image ? <span>{`Hero Image ${index + 1}`}</span> : null}
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="browserHero__content">

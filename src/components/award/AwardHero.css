@@ -170,22 +170,41 @@
   text-align: center;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(199, 154, 74, 0.35);
+}
+
+.awardRibbon__borderImage {
+  position: absolute;
+  inset: -18%;
+  width: 136%;
+  height: 136%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .awardRibbon::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
-  transform: translateX(-100%);
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0) 34%, rgba(255, 255, 255, 0.32) 50%, rgba(255, 255, 255, 0) 66%);
+  background-size: 260% 100%;
+  background-position: 130% 0;
   animation: ribbonShimmer 6s linear infinite;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
 }
 
 @keyframes ribbonShimmer {
-  to {
-    transform: translateX(100%);
+  0%,
+  45% {
+    background-position: 130% 0;
+  }
+
+  100% {
+    background-position: -130% 0;
   }
 }
 
@@ -222,6 +241,8 @@
   font-weight: 700;
   letter-spacing: 0.4em;
   font-size: 13px;
+  position: relative;
+  z-index: 3;
 }
 
 .winnerTicker {

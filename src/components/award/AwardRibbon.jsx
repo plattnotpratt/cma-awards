@@ -1,3 +1,6 @@
+
+const RIBBON_BORDER_IMAGE = "/CMA - Awards - Medal Texture - Gold.png";
+
 function getRibbonTone(label, isWinner) {
   const normalized = String(label ?? "").toLowerCase();
 
@@ -13,6 +16,7 @@ export default function AwardRibbon({ label, isWinner }) {
   const tone = getRibbonTone(label, isWinner);
   return (
     <div className={`awardRibbon awardRibbon--${tone}`}>
+      {RIBBON_BORDER_IMAGE ? <img className="awardRibbon__borderImage" src={RIBBON_BORDER_IMAGE} alt="" aria-hidden="true" /> : null}
       <span className="awardRibbon__label">{label ?? "Result Pending"}</span>
     </div>
   );

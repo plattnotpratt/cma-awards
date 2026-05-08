@@ -140,8 +140,21 @@ a:hover {
 
 .browserHero__image {
   min-height: clamp(220px, 34vw, 360px);
+  overflow: hidden;
+}
+
+.browserHero__slider {
+  display: flex;
+  width: 400%;
+  height: clamp(220px, 34vw, 500px);
+  animation: browserHeroSlider 24s ease-in-out infinite;
+}
+
+.browserHero__slide {
   display: grid;
   place-items: center;
+  width: 25%;
+  min-height: 100%;
   color: rgba(255, 255, 255, 0.82);
   text-transform: uppercase;
   letter-spacing: 0.24em;
@@ -151,14 +164,43 @@ a:hover {
     radial-gradient(700px circle at 20% 10%, rgba(255, 255, 255, 0.22), transparent 52%),
     radial-gradient(500px circle at 78% 20%, rgba(185, 160, 106, 0.45), transparent 55%),
     linear-gradient(135deg, rgba(18, 62, 87, 0.98), rgba(28, 95, 122, 0.9) 48%, rgba(14, 47, 68, 0.98));
+  background-position: center;
+  background-size: cover;
 }
 
-.browserHero__image span {
+.browserHero__slide span {
   padding: 12px 18px;
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
+}
+
+@keyframes browserHeroSlider {
+
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+
+  25%,
+  43% {
+    transform: translateX(-25%);
+  }
+
+  50%,
+  68% {
+    transform: translateX(-50%);
+  }
+
+  75%,
+  93% {
+    transform: translateX(-75%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .browserHero__content {
@@ -330,6 +372,7 @@ a:hover {
 }
 
 @keyframes browserResultsGlow {
+
   0%,
   100% {
     background-position: 0 0, 0% 50%;
@@ -409,6 +452,7 @@ a:hover {
 }
 
 @media (max-width: 640px) {
+
   .browserResults__titleRow,
   .row {
     flex-direction: column;
@@ -417,6 +461,10 @@ a:hover {
 
   .browserHero__image {
     min-height: 180px;
+  }
+
+  .browserHero__slider {
+    height: 180px;
   }
 
   .browserHero__searchInput {
