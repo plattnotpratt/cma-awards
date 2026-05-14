@@ -16,6 +16,16 @@ const openWaterApiBaseUrl = process.env.OPEN_WATER_API_BASE_URL ?? "https://api.
 const db = new Database(dbPath, { readonly: true });
 const app = express();
 
+app.disable("etag");
+
+app.use("/local-api", (_req, res, next) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "0");
+  res.set("Surrogate-Control", "no-store");
+  next();
+});
+
 const listAwards = db.prepare(`
   SELECT
     id,
