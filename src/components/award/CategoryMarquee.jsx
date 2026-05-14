@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { gsap, useGSAP, SplitText } from "../../utils/gsap";
 
-export default function CategoryMarquee({ category, year, path }) {
+export default function CategoryMarquee({ category, year }) {
   const marqueeRef = useRef(null);
   useGSAP(() => {
     if (!marqueeRef.current) return;
@@ -30,7 +30,7 @@ export default function CategoryMarquee({ category, year, path }) {
       <h1 className="categoryMarquee__title">
         {category ?? "Category unavailable"}
       </h1>
-      {path ? <div className="categoryMarquee__path">{path}</div> : null}
+
     </div>
   );
 }

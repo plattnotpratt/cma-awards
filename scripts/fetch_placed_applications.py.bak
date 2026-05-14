@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import re
 import sqlite3
 import sys
 from datetime import datetime, timezone
@@ -29,9 +28,6 @@ import os
 API_BASE_URL = "https://api.secure-platform.com/v2"
 DEFAULT_PAGE_SIZE = 100
 PLACED_TABLE = "placed_applications"
-BOOK_AWARDS_PROGRAM_ID = 55
-BOOK_TITLE_ALIAS = "tittleOfBook"
-EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 def parse_args() -> argparse.Namespace:
@@ -135,8 +131,7 @@ def iter_application_ids(
             if isinstance(app_id, int):
                 ids.append(app_id)
 
-        paging_info = payload.get("pagingInfo") or {}
-        if not paging_info.get("hasNextPage"):
+        if not payload.get("hasNextPage"):
             break
 
         page_index += 1
@@ -197,40 +192,6 @@ def normalize_placement(winner_types: list[Any] | None) -> str | None:
     return mapping.get(cleaned)
 
 
-def looks_like_email(value: Any) -> bool:
-    if not isinstance(value, str):
-        return False
-
-    return bool(EMAIL_RE.match(value.strip()))
-
-
-def field_text_value(field: dict[str, Any]) -> str | None:
-    value = field.get("firstValue") or field.get("value")
-    if value is None:
-        return None
-
-    cleaned = str(value).strip()
-    return cleaned or None
-
-
-def book_title(round_data: dict[str, Any]) -> str | None:
-    for field in round_data.get("submissionFieldValues") or []:
-        if field.get("alias") != BOOK_TITLE_ALIAS:
-            continue
-
-        return field_text_value(field)
-
-    return None
-
-
-def display_name(application: dict[str, Any], round_data: dict[str, Any]) -> str | None:
-    name = application.get("name")
-    if application.get("programId") != BOOK_AWARDS_PROGRAM_ID or not looks_like_email(name):
-        return name
-
-    return book_title(round_data) or name
-
-
 def build_row(application: dict[str, Any], fetched_at_utc: str) -> dict[str, Any] | None:
     round_data = pick_round(application)
     if not round_data or not round_data.get("isWinner"):
@@ -245,7 +206,7 @@ def build_row(application: dict[str, Any], fetched_at_utc: str) -> dict[str, Any
         "program_id": application.get("programId"),
         "user_id": application.get("userId"),
         "email": application.get("email"),
-        "name": display_name(application, round_data),
+        "name": application.get("name"),
         "code": application.get("code"),
         "category_code": application.get("categoryCode"),
         "category_name": application.get("categoryName"),
@@ -416,10 +377,7 @@ def main() -> int:
                 upsert_row(conn, row)
                 placed += 1
                 if args.verbose:
-                    if row["name"] != application.get("name"):
-                        print(f"{application_id}: placed ({row['placement']}), name replaced with book title")
-                    else:
-                        print(f"{application_id}: placed ({row['placement']})")
+                    print(f"{application_id}: placed ({row['placement']})")
             except requests.HTTPError as exc:
                 failed += 1
                 print(f"{application_id}: request failed - {exc}", file=sys.stderr)

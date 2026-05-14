@@ -62,11 +62,13 @@
 }
 
 @keyframes sparkPulse {
+
   0%,
   100% {
     transform: scale(1);
     opacity: 0.55;
   }
+
   50% {
     transform: scale(1.08);
     opacity: 0.85;
@@ -96,9 +98,9 @@
 
 .categoryMarquee__title {
   margin: 0;
-  font-size: clamp(28px, 8vw, 64px);
-  font-weight: 500;
-  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  font-size: clamp(28px, 4vw, 32px);
+  font-weight: 100;
+  /* font-family: TODO */
   line-height: 1;
   color: var(--stage-ink);
   text-wrap: balance;
@@ -198,6 +200,7 @@
 }
 
 @keyframes ribbonShimmer {
+
   0%,
   45% {
     background-position: 130% 0;
@@ -311,6 +314,7 @@
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-50%);
   }

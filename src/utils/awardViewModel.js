@@ -30,6 +30,15 @@ function fieldValue(fieldValues, alias) {
   return hit.value ?? null;
 }
 
+function looksLikeEmail(value) {
+  return typeof value === "string" && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value.trim());
+}
+
+function displayName(award, fieldValues) {
+  if (!looksLikeEmail(award?.name)) return award?.name ?? null;
+  return fieldValue(fieldValues, "tittleOfBook") ?? award.name;
+}
+
 function sanitizePlacement(label) {
   if (!label) return label;
   const cleaned = label.replace(/\bcomplete\b/gi, "").replace(/\s{2,}/g, " ").trim();
@@ -58,28 +67,33 @@ export function buildAwardViewModel(award, fallbackId) {
   const publisher =
     fieldValue(fv, "Flask5publisherName") ??
     fieldValue(fv, "searchForAPublisher1") ??
+    fieldValue(fv, "publisher1") ??
     null;
 
-  const entryTitle = fieldValue(fv, "titleOfEntry") ?? award.name ?? null;
+  const name = displayName(award, fv);
+  const entryTitle = fieldValue(fv, "titleOfEntry") ?? name ?? null;
+  const bookAuthor = fieldValue(fv, "titleOfBook") ?? null;
 
   const placementRaw = round?.isWinner ? round?.winnerTypes?.[0] ?? "Winner" : "Not selected";
   const placement = sanitizePlacement(placementRaw) ?? (round?.isWinner ? "Winner" : "Not selected");
   const rawCategoryName = award.categoryName ?? null;
   const displayCategoryName = sanitizeCategoryName(rawCategoryName);
+  const organization = looksLikeEmail(award.name) && bookAuthor ? bookAuthor : publisher ?? fieldValue(fv, "bylineCredits") ?? null;
+  const heroOrganization = organization === award.categoryPath ? bookAuthor ?? organization : organization;
 
   const hero = {
     categoryName: displayCategoryName ?? rawCategoryName,
     categoryPath: award.categoryPath ?? null,
     year: finalized ? finalized.getFullYear() : null,
-    entryTitle: entryTitle ?? award.name ?? "Award entry",
-    organization: publisher ?? fieldValue(fv, "bylineCredits") ?? null,
+    entryTitle: entryTitle ?? name ?? "Award entry",
+    organization: heroOrganization,
     placement,
     isWinner: !!round?.isWinner,
   };
 
   return {
     id: award.id ?? fallbackId,
-    name: award.name ?? "Award",
+    name: name ?? "Award",
     description: award.description ?? null,
     categoryName: displayCategoryName ?? rawCategoryName,
     categoryPath: award.categoryPath ?? null,

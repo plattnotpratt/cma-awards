@@ -87,7 +87,8 @@ export default function AwardDetails({ award }) {
           <span className="awardGalleryCta__empty">Gallery unavailable</span>
         )}
       </div>
-
+      <div>
+      </div>
       <div className="awardShareLinks" aria-label="Share this award">
         <button className="awardShareLinks__item" type="button" onClick={handleNativeShare}>
           Share

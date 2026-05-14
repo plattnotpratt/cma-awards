@@ -1,10 +1,10 @@
 import { buildAwardViewModel } from "./awardViewModel";
 
 const PROGRAM_NAMES = {
-  55: "Catholic Media Awards Program",
-  56: "CMA Book Awards",
+  58: "Catholic Media Awards Program",
+  55: "CMA Book Awards",
   57: "Gabriel Awards",
-  58: "St. Juan Diego Collegiate Awards",
+  56: "St. Juan Diego Collegiate Awards",
 };
 
 function cleanCategoryLabel(value) {
