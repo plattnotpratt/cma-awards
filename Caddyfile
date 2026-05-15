@@ -1,4 +1,4 @@
-awards.catholicmediaassociation.com {
+awards.catholicmediaassociation.org {
 	encode gzip zstd
 	reverse_proxy web:80
 }
