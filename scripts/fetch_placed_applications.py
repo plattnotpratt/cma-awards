@@ -174,9 +174,6 @@ def normalize_placement(winner_types: list[Any] | None) -> str | None:
     if not winner_types:
         return None
 
-    raw = str(winner_types[0]).strip().lower()
-    cleaned = " ".join(raw.replace("-", " ").split())
-
     mapping = {
         "1st": "1st place",
         "1st place": "1st place",
@@ -193,8 +190,24 @@ def normalize_placement(winner_types: list[Any] | None) -> str | None:
         "honorable mention": "honorable mention",
         "honourable mention": "honorable mention",
     }
+    priority = {
+        "1st place": 1,
+        "2nd place": 2,
+        "3rd place": 3,
+        "honorable mention": 4,
+    }
+    placements = []
 
-    return mapping.get(cleaned)
+    for winner_type in winner_types:
+        cleaned = " ".join(str(winner_type).strip().lower().replace("-", " ").split())
+        placement = mapping.get(cleaned)
+        if placement:
+            placements.append(placement)
+
+    if not placements:
+        return None
+
+    return min(placements, key=lambda placement: priority[placement])
 
 
 def looks_like_email(value: Any) -> bool:
@@ -410,7 +423,11 @@ def main() -> int:
                 if row is None:
                     skipped += 1
                     if args.verbose:
-                        print(f"{application_id}: not placed")
+                        round_data = pick_round(application)
+                        if round_data and round_data.get("isWinner"):
+                            print(f"{application_id}: winner with unrecognized placement {round_data.get('winnerTypes')}")
+                        else:
+                            print(f"{application_id}: not placed")
                     continue
 
                 upsert_row(conn, row)

@@ -4,6 +4,7 @@ import ErrorState from "../components/ErrorState";
 import Loading from "../components/Loading";
 import CategoryResults from "../components/browser/CategoryResults";
 import HierarchyPanel from "../components/browser/HierarchyPanel";
+import SearchResults from "../components/browser/SearchResults";
 import { useAwards } from "../hooks/useAwards";
 import { buildAwardsHierarchy } from "../utils/awardHierarchy";
 
@@ -42,25 +43,30 @@ export default function AwardsList() {
   const resultsRef = useRef(null);
 
   const hierarchy = useMemo(() => buildAwardsHierarchy(awards, q), [awards, q]);
+  const hasSearchQuery = q.trim().length > 0;
 
   const activeProgram = useMemo(() => {
-    return hierarchy.find((program) => program.name === activeProgramName) ?? hierarchy[0] ?? null;
+    if (!activeProgramName) return null;
+    return hierarchy.find((program) => program.name === activeProgramName) ?? null;
   }, [hierarchy, activeProgramName]);
 
   const activeDivision = useMemo(() => {
+    if (!activeDivisionName) return null;
     const divisions = activeProgram?.divisions ?? [];
-    return divisions.find((division) => division.name === activeDivisionName) ?? divisions[0] ?? null;
+    return divisions.find((division) => division.name === activeDivisionName) ?? null;
   }, [activeProgram, activeDivisionName]);
 
   const activeCategory = useMemo(() => {
+    if (!activeCategoryName) return null;
     const categories = activeDivision?.categories ?? [];
-    return categories.find((category) => category.name === activeCategoryName) ?? categories[0] ?? null;
+    return categories.find((category) => category.name === activeCategoryName) ?? null;
   }, [activeDivision, activeCategoryName]);
 
   useLayoutEffect(() => {
     if (status !== "success") return;
     searchInputRef.current?.focus({ preventScroll: true });
   }, [status]);
+
   useLayoutEffect(() => {
     function updateHeight() {
       const programHeight = programPanelRef.current?.offsetHeight ?? 0;
@@ -118,6 +124,7 @@ export default function AwardsList() {
         </div>
 
         <div className="browserHero__content">
+          <div className="browserHero__searchWrap">
           <input
             id="awards-search"
             ref={searchInputRef}
@@ -129,6 +136,20 @@ export default function AwardsList() {
             placeholder="Search awards, winners, publishers, categories..."
             aria-label="Search awards"
           />
+          {q ? (
+            <button
+              className="browserHero__clearSearch"
+              type="button"
+              aria-label="Clear search"
+              onClick={() => {
+                updateParams({ q: "", program: "", division: "", category: "" });
+                searchInputRef.current?.focus({ preventScroll: true });
+              }}
+            >
+              Clear
+            </button>
+          ) : null}
+          </div>
         </div>
       </div>
 
@@ -179,7 +200,11 @@ export default function AwardsList() {
           />
         </div>
 
-        <CategoryResults category={activeCategory} resultsRef={resultsRef} />
+        {hasSearchQuery ? (
+          <SearchResults hierarchy={hierarchy} query={q} resultsRef={resultsRef} />
+        ) : activeCategory ? (
+          <CategoryResults category={activeCategory} resultsRef={resultsRef} />
+        ) : null}
       </div>
     </section>
   );

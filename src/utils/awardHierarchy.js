@@ -48,6 +48,30 @@ function normalizePlacement(label, isWinner) {
   return { type: "other", rank: 5, label: text || "Listed Entry" };
 }
 
+function normalizeSearchText(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function matchesSearch(award, query) {
+  const searchableFields = [
+    award.entryTitle,
+    award.publisher,
+    award.program,
+    award.division,
+    award.category,
+    award.placementLabel,
+  ];
+  const normalizedQuery = normalizeSearchText(query);
+  const haystack = normalizeSearchText(searchableFields.filter(Boolean).join(" "));
+
+  if (!normalizedQuery) return true;
+  return haystack.includes(normalizedQuery);
+}
+
 function parseLocalHierarchy(award) {
   const pathParts = splitCategoryPath(award.categoryPath);
   const division = cleanCategoryLabel(pathParts[0] ?? "General");
@@ -132,19 +156,10 @@ function summarizeAward(award) {
 }
 
 export function buildAwardsHierarchy(awards, query) {
-  const needle = query.trim().toLowerCase();
   const items = awards
     .map(summarizeAward)
     .filter(Boolean)
-    .filter((award) => {
-      if (!needle) return true;
-      const haystack = [award.entryTitle, award.publisher, award.program, award.division, award.category, award.placementLabel]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      return haystack.includes(needle);
-    });
+    .filter((award) => matchesSearch(award, query));
 
   const programs = new Map();
 

@@ -1,16 +1,36 @@
-# React + Vite
+# CMA Awards
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Local Development
 
-Currently, two official plugins are available:
+Create `.env` from `.example-env` and fill in the OpenWater credentials. The local API server reads either `OPEN_WATER_*` or `VITE_OPEN_WATER_*` variables.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The review password gate is controlled by environment variables:
 
-## React Compiler
+```sh
+AWARDS_ACCESS_ENABLED=true
+AWARDS_ACCESS_PASSWORD=CmC4w4Rd5!
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Set `AWARDS_ACCESS_ENABLED=false` to disable the gate. When enabled, successful access is stored in the browser for 1 hour and all awards API endpoints require the generated access token.
 
-## Expanding the ESLint configuration
+Run the frontend and local API server together:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```sh
+npm run dev
+```
+
+Vite serves the app and proxies `/local-api` to the local Express server on port `3001`. Award list data comes from the local SQLite database, and award detail requests are proxied by the Express server to the OpenWater API so credentials stay server-side.
+
+If you only need the frontend without the local API process, run:
+
+```sh
+npm run dev:web
+```
+
+## Docker
+
+Docker Compose keeps the frontend and API as separate services. nginx proxies `/local-api` from the web container to the `api` service, so the browser uses the same `/local-api` paths in both local development and Docker.
+
+```sh
+docker compose up --build
+```

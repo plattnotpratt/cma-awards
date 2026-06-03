@@ -1,5 +1,6 @@
 import Database from "better-sqlite3";
 import express from "express";
+import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,11 +13,15 @@ const openWaterApiKey = process.env.OPEN_WATER_API_KEY ?? process.env.VITE_OPEN_
 const openWaterClientKey = process.env.OPEN_WATER_CLIENT_KEY ?? process.env.VITE_OPEN_WATER_CLIENT_KEY;
 const openWaterOrganizationCode = process.env.OPEN_WATER_ORGANIZATION_CODE ?? process.env.VITE_OPEN_WATER_ORGANIZATION_CODE;
 const openWaterApiBaseUrl = process.env.OPEN_WATER_API_BASE_URL ?? "https://api.secure-platform.com/v2";
+const accessPassword = process.env.AWARDS_ACCESS_PASSWORD ?? "";
+const accessEnabled = process.env.AWARDS_ACCESS_ENABLED !== "false" && accessPassword.length > 0;
+const accessTokenTtlMs = 60 * 60 * 1000;
 
 const db = new Database(dbPath, { readonly: true });
 const app = express();
 
 app.disable("etag");
+app.use(express.json());
 
 app.use("/local-api", (_req, res, next) => {
   res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
@@ -39,15 +44,93 @@ const listAwards = db.prepare(`
   ORDER BY category_path COLLATE NOCASE, placement COLLATE NOCASE, name COLLATE NOCASE
 `);
 
+function base64UrlEncode(value) {
+  return Buffer.from(value).toString("base64url");
+}
+
+function base64UrlDecode(value) {
+  return Buffer.from(value, "base64url").toString("utf8");
+}
+
+function signPayload(payload) {
+  return crypto.createHmac("sha256", accessPassword).update(payload).digest("base64url");
+}
+
+function createAccessToken() {
+  const expiresAt = Date.now() + accessTokenTtlMs;
+  const payload = base64UrlEncode(JSON.stringify({ expiresAt }));
+  const signature = signPayload(payload);
+
+  return { token: `${payload}.${signature}`, expiresAt };
+}
+
+function verifyAccessToken(token) {
+  if (!accessEnabled) return true;
+  if (!token) return false;
+
+  const [payload, signature] = token.split(".");
+  if (!payload || !signature) return false;
+
+  const expectedSignature = signPayload(payload);
+  const receivedSignature = Buffer.from(signature);
+  const validSignature =
+    receivedSignature.length === Buffer.byteLength(expectedSignature) &&
+    crypto.timingSafeEqual(receivedSignature, Buffer.from(expectedSignature));
+
+  if (!validSignature) return false;
+
+  try {
+    const parsed = JSON.parse(base64UrlDecode(payload));
+    return Number.isFinite(parsed.expiresAt) && parsed.expiresAt > Date.now();
+  } catch {
+    return false;
+  }
+}
+
+function requireAccess(req, res, next) {
+  if (!accessEnabled) {
+    next();
+    return;
+  }
+
+  const header = req.get("authorization") ?? "";
+  const token = header.startsWith("Bearer ") ? header.slice("Bearer ".length) : "";
+
+  if (!verifyAccessToken(token)) {
+    res.status(401).json({ error: "Access password required" });
+    return;
+  }
+
+  next();
+}
+
 app.get("/local-api/health", (_req, res) => {
   res.json({ ok: true });
 });
 
-app.get("/local-api/awards", (_req, res) => {
+app.get("/local-api/access/status", (_req, res) => {
+  res.json({ enabled: accessEnabled });
+});
+
+app.post("/local-api/access/verify", (req, res) => {
+  if (!accessEnabled) {
+    res.json({ enabled: false });
+    return;
+  }
+
+  if (req.body?.password !== accessPassword) {
+    res.status(401).json({ error: "Invalid password" });
+    return;
+  }
+
+  res.json({ enabled: true, ...createAccessToken() });
+});
+
+app.get("/local-api/awards", requireAccess, (_req, res) => {
   res.json({ items: listAwards.all() });
 });
 
-app.get("/local-api/awards/:id", async (req, res) => {
+app.get("/local-api/awards/:id", requireAccess, async (req, res) => {
   if (!openWaterApiKey || !openWaterClientKey) {
     res.status(500).json({ error: "OpenWater credentials are not configured" });
     return;
