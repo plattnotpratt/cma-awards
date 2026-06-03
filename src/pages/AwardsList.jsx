@@ -154,51 +154,53 @@ export default function AwardsList() {
       </div>
 
       <div className="browserWorkspace browserWorkspace--stacked">
-        <div className="browserGrid browserGrid--selectors">
-          <HierarchyPanel
-            panelRef={programPanelRef}
-            title="Programs"
-            items={hierarchy}
-            activeValue={activeProgram?.name ?? ""}
-            emptyLabel="No programs matched your search."
-            getCountLabel={(item) => `${item.awardCount} entries`}
-            onSelect={(programName) => {
-              updateParams({ program: programName, division: "", category: "" });
-              scrollToNextSection(divisionPanelRef);
-            }}
-            compact
-          />
+        {!hasSearchQuery ? (
+          <div className="browserGrid browserGrid--selectors">
+            <HierarchyPanel
+              panelRef={programPanelRef}
+              title="Programs"
+              items={hierarchy}
+              activeValue={activeProgram?.name ?? ""}
+              emptyLabel="No programs matched your search."
+              getCountLabel={(item) => `${item.awardCount} entries`}
+              onSelect={(programName) => {
+                updateParams({ program: programName, division: "", category: "" });
+                scrollToNextSection(divisionPanelRef);
+              }}
+              compact
+            />
 
-          <HierarchyPanel
-            panelRef={divisionPanelRef}
-            title="Divisions"
-            items={activeProgram?.divisions ?? []}
-            activeValue={activeDivision?.name ?? ""}
-            emptyLabel="Select a program to browse its divisions."
-            getCountLabel={(item) => `${item.awardCount} entries`}
-            onSelect={(divisionName) => {
-              updateParams({ division: divisionName, category: "" });
-              scrollToNextSection(categoryPanelRef);
-            }}
-            scrollable
-            style={selectorPanelHeight ? { height: `${selectorPanelHeight}px` } : undefined}
-          />
+            <HierarchyPanel
+              panelRef={divisionPanelRef}
+              title="Divisions"
+              items={activeProgram?.divisions ?? []}
+              activeValue={activeDivision?.name ?? ""}
+              emptyLabel="Select a program to browse its divisions."
+              getCountLabel={(item) => `${item.awardCount} entries`}
+              onSelect={(divisionName) => {
+                updateParams({ division: divisionName, category: "" });
+                scrollToNextSection(categoryPanelRef);
+              }}
+              scrollable
+              style={selectorPanelHeight ? { height: `${selectorPanelHeight}px` } : undefined}
+            />
 
-          <HierarchyPanel
-            panelRef={categoryPanelRef}
-            title="Categories"
-            items={activeDivision?.categories ?? []}
-            activeValue={activeCategory?.name ?? ""}
-            emptyLabel="Select a division to browse its categories."
-            getCountLabel={(item) => `${item.awardCount} listed`}
-            onSelect={(categoryName) => {
-              updateParams({ category: categoryName });
-              scrollToNextSection(resultsRef);
-            }}
-            scrollable
-            style={selectorPanelHeight ? { height: `${selectorPanelHeight}px` } : undefined}
-          />
-        </div>
+            <HierarchyPanel
+              panelRef={categoryPanelRef}
+              title="Categories"
+              items={activeDivision?.categories ?? []}
+              activeValue={activeCategory?.name ?? ""}
+              emptyLabel="Select a division to browse its categories."
+              getCountLabel={(item) => `${item.awardCount} listed`}
+              onSelect={(categoryName) => {
+                updateParams({ category: categoryName });
+                scrollToNextSection(resultsRef);
+              }}
+              scrollable
+              style={selectorPanelHeight ? { height: `${selectorPanelHeight}px` } : undefined}
+            />
+          </div>
+        ) : null}
 
         {hasSearchQuery ? (
           <SearchResults hierarchy={hierarchy} query={q} resultsRef={resultsRef} />
