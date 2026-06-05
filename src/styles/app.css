@@ -21,10 +21,7 @@
 body {
   margin: 0;
   color: var(--cma-ink);
-  background:
-    radial-gradient(900px circle at 12% -10%, rgba(28, 95, 122, 0.14), transparent 55%),
-    radial-gradient(700px circle at 92% 8%, rgba(185, 160, 106, 0.18), transparent 55%),
-    linear-gradient(180deg, var(--cma-cream), #fff 55%);
+  background: var(--cma-cream);
 }
 
 /* Links: navy ink with gold hover */
@@ -42,81 +39,6 @@ a:hover {
 
 .appShell {
   min-height: 100vh;
-}
-
-.accessGate__backdrop {
-  min-height: 100vh;
-  pointer-events: none;
-  user-select: none;
-  filter: blur(18px);
-  opacity: 0.18;
-  transform: scale(1.02);
-}
-
-.accessGate__backdrop::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: rgba(246, 242, 234, 0.82);
-}
-
-.accessGate {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: rgba(11, 31, 42, 0.22);
-}
-
-.accessGate__panel {
-  width: min(100%, 440px);
-  margin-top: 0;
-  padding: clamp(22px, 4vw, 34px);
-  background: rgba(255, 255, 255, 0.96);
-}
-
-.accessGate__panel h1 {
-  margin: 0 0 10px;
-  color: var(--cma-navy-2);
-}
-
-.accessGate__panel p {
-  margin: 0 0 18px;
-}
-
-.accessGate__label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--cma-navy-2);
-  font-weight: 700;
-}
-
-.accessGate__input {
-  width: 100%;
-  max-width: none;
-}
-
-.accessGate__error {
-  color: #8a1f11;
-  font-weight: 700;
-}
-
-.accessGate__button {
-  width: 100%;
-  min-height: 44px;
-  border: 0;
-  border-radius: 12px;
-  background: var(--cma-navy);
-  color: #fff;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.accessGate__button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
 }
 
 .container {
@@ -288,6 +210,16 @@ a:hover {
   padding: clamp(14px, 3vw, 22px);
 }
 
+.browserHero__intro {
+  max-width: 760px;
+  margin: 0 auto clamp(14px, 2vw, 18px);
+  color: rgba(18, 62, 87, 0.78);
+  font-size: clamp(16px, 1.8vw, 20px);
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+}
+
 .browserHero__searchWrap {
   position: relative;
 }
@@ -370,7 +302,11 @@ a:hover {
 }
 
 .browserGrid--selectors {
-  align-items: start;
+  align-items: stretch;
+}
+
+.browserGrid--selectors .browserPanel {
+  height: clamp(320px, 44vh, 520px);
 }
 
 .browserPanel__header,
@@ -709,6 +645,7 @@ a:hover {
 
   .browserPanel,
   .browserResults {
+    height: auto;
     min-height: unset;
     max-height: none;
     position: static;

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import ErrorState from "../components/ErrorState";
 import Loading from "../components/Loading";
@@ -35,7 +35,6 @@ export default function AwardsList() {
   const activeCategoryName = searchParams.get("category") ?? "";
 
   const { awards, status, error } = useAwards("?startedAtUtc=2025-11-03T12%3A00%3A00Z&pageSize=1000");
-  const [selectorPanelHeight, setSelectorPanelHeight] = useState(null);
   const searchInputRef = useRef(null);
   const programPanelRef = useRef(null);
   const divisionPanelRef = useRef(null);
@@ -66,23 +65,6 @@ export default function AwardsList() {
     if (status !== "success") return;
     searchInputRef.current?.focus({ preventScroll: true });
   }, [status]);
-
-  useLayoutEffect(() => {
-    function updateHeight() {
-      const programHeight = programPanelRef.current?.offsetHeight ?? 0;
-      setSelectorPanelHeight(programHeight > 0 ? programHeight : null);
-    }
-
-    updateHeight();
-
-    if (typeof ResizeObserver === "undefined") return undefined;
-
-    const observer = new ResizeObserver(() => updateHeight());
-
-    if (programPanelRef.current) observer.observe(programPanelRef.current);
-
-    return () => observer.disconnect();
-  }, [q, hierarchy.length]);
 
   function updateParams(next) {
     const merged = new URLSearchParams(searchParams);
@@ -124,31 +106,36 @@ export default function AwardsList() {
         </div>
 
         <div className="browserHero__content">
+          <p className="browserHero__intro">
+            Welcome to the CMA Awards platform, where we celebrate the creative achievements that enrich
+            Catholic culture.
+          </p>
+
           <div className="browserHero__searchWrap">
-          <input
-            id="awards-search"
-            ref={searchInputRef}
-            className="input browserHero__searchInput"
-            value={q}
-            onChange={(event) => {
-              updateParams({ q: event.target.value, program: "", division: "", category: "" });
-            }}
-            placeholder="Search awards, winners, publishers, categories..."
-            aria-label="Search awards"
-          />
-          {q ? (
-            <button
-              className="browserHero__clearSearch"
-              type="button"
-              aria-label="Clear search"
-              onClick={() => {
-                updateParams({ q: "", program: "", division: "", category: "" });
-                searchInputRef.current?.focus({ preventScroll: true });
+            <input
+              id="awards-search"
+              ref={searchInputRef}
+              className="input browserHero__searchInput"
+              value={q}
+              onChange={(event) => {
+                updateParams({ q: event.target.value, program: "", division: "", category: "" });
               }}
-            >
-              Clear
-            </button>
-          ) : null}
+              placeholder="Search awards, winners, publishers, categories..."
+              aria-label="Search awards"
+            />
+            {q ? (
+              <button
+                className="browserHero__clearSearch"
+                type="button"
+                aria-label="Clear search"
+                onClick={() => {
+                  updateParams({ q: "", program: "", division: "", category: "" });
+                  searchInputRef.current?.focus({ preventScroll: true });
+                }}
+              >
+                Clear
+              </button>
+            ) : null}
           </div>
         </div>
       </div>
@@ -182,7 +169,6 @@ export default function AwardsList() {
                 scrollToNextSection(categoryPanelRef);
               }}
               scrollable
-              style={selectorPanelHeight ? { height: `${selectorPanelHeight}px` } : undefined}
             />
 
             <HierarchyPanel
@@ -197,7 +183,6 @@ export default function AwardsList() {
                 scrollToNextSection(resultsRef);
               }}
               scrollable
-              style={selectorPanelHeight ? { height: `${selectorPanelHeight}px` } : undefined}
             />
           </div>
         ) : null}

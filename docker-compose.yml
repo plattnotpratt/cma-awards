@@ -3,6 +3,18 @@ services:
     image: caddy:2-alpine
     depends_on:
       - web
+    env_file:
+      - .env
+    command:
+      - sh
+      - -c
+      - |
+        if [ -z "$$CADDY_BASICAUTH_USER" ] || [ -z "$$CADDY_BASICAUTH_PASSWORD" ]; then
+          echo "CADDY_BASICAUTH_USER and CADDY_BASICAUTH_PASSWORD must be set"
+          exit 1
+        fi
+        export CADDY_BASICAUTH_PASSWORD_HASH="$$(caddy hash-password --plaintext "$$CADDY_BASICAUTH_PASSWORD")"
+        exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
     ports:
       - "80:80"
       - "443:443"

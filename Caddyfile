@@ -1,4 +1,7 @@
 awards.catholicmediaassociation.org {
 	encode gzip zstd
+	basic_auth {
+		{$CADDY_BASICAUTH_USER} {$CADDY_BASICAUTH_PASSWORD_HASH}
+	}
 	reverse_proxy web:80
 }

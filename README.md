@@ -4,15 +4,6 @@
 
 Create `.env` from `.example-env` and fill in the OpenWater credentials. The local API server reads either `OPEN_WATER_*` or `VITE_OPEN_WATER_*` variables.
 
-The review password gate is controlled by environment variables:
-
-```sh
-AWARDS_ACCESS_ENABLED=true
-AWARDS_ACCESS_PASSWORD=CmC4w4Rd5!
-```
-
-Set `AWARDS_ACCESS_ENABLED=false` to disable the gate. When enabled, successful access is stored in the browser for 1 hour and all awards API endpoints require the generated access token.
-
 Run the frontend and local API server together:
 
 ```sh
@@ -30,6 +21,15 @@ npm run dev:web
 ## Docker
 
 Docker Compose keeps the frontend and API as separate services. nginx proxies `/local-api` from the web container to the `api` service, so the browser uses the same `/local-api` paths in both local development and Docker.
+
+The deployed Docker site is protected by Caddy Basic Auth. Add these values to `.env` before starting Compose:
+
+```sh
+CADDY_BASICAUTH_USER=review
+CADDY_BASICAUTH_PASSWORD=your-password
+```
+
+Docker generates the hashed Caddy password at container startup, so the plain text password only needs to be configured in `.env`.
 
 ```sh
 docker compose up --build
