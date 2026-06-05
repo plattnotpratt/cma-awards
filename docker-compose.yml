@@ -9,12 +9,28 @@ services:
       - sh
       - -c
       - |
+        if [ "$${CADDY_BASICAUTH_ENABLED:-true}" = "false" ]; then
+          printf '%s\n' \
+            'awards.catholicmediaassociation.org {' \
+            '  encode gzip zstd' \
+            '  reverse_proxy web:80' \
+            '}' > /tmp/Caddyfile
+          exec caddy run --config /tmp/Caddyfile --adapter caddyfile
+        fi
         if [ -z "$$CADDY_BASICAUTH_USER" ] || [ -z "$$CADDY_BASICAUTH_PASSWORD" ]; then
           echo "CADDY_BASICAUTH_USER and CADDY_BASICAUTH_PASSWORD must be set"
           exit 1
         fi
         export CADDY_BASICAUTH_PASSWORD_HASH="$$(caddy hash-password --plaintext "$$CADDY_BASICAUTH_PASSWORD")"
-        exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+        printf '%s\n' \
+          'awards.catholicmediaassociation.org {' \
+          '  encode gzip zstd' \
+          '  basic_auth {' \
+          "    $$CADDY_BASICAUTH_USER $$CADDY_BASICAUTH_PASSWORD_HASH" \
+          '  }' \
+          '  reverse_proxy web:80' \
+          '}' > /tmp/Caddyfile
+        exec caddy run --config /tmp/Caddyfile --adapter caddyfile
     ports:
       - "80:80"
       - "443:443"

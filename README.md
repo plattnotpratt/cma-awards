@@ -25,11 +25,14 @@ Docker Compose keeps the frontend and API as separate services. nginx proxies `/
 The deployed Docker site is protected by Caddy Basic Auth. Add these values to `.env` before starting Compose:
 
 ```sh
+CADDY_BASICAUTH_ENABLED=true
 CADDY_BASICAUTH_USER=review
 CADDY_BASICAUTH_PASSWORD=your-password
 ```
 
 Docker generates the hashed Caddy password at container startup, so the plain text password only needs to be configured in `.env`.
+
+To disable Basic Auth later, set `CADDY_BASICAUTH_ENABLED=false` in `.env` and restart Compose.
 
 ```sh
 docker compose up --build
