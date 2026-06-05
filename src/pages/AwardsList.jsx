@@ -10,20 +10,24 @@ import { buildAwardsHierarchy } from "../utils/awardHierarchy";
 
 const HERO_SLIDES = [
   {
-    image: "/cma-slider-awardWinner-01.jpg",
+    image: "/cma-slides-01-selfie-scaled-1960by1000.jpg",
     alt: "Awards celebration slide one",
   },
   {
-    image: "/cma-slider-awardWinner-03.jpg",
+    image: "/cma-slides-02-authorJD-1960by1000.jpg",
     alt: "Awards celebration slide two",
   },
   {
-    image: "/cma-slider-awardWinner-02-selfie.jpg",
+    image: "/cma-slides-03-awardSpeach-1960by1000.jpg",
     alt: "Awards celebration slide three",
   },
   {
-    image: "/cma-slider-awardWinner-01.jpg",
+    image: "/cma-slides-04-fourFriends-1960by1000.jpg",
     alt: "Awards celebration slide four",
+  },
+  {
+    image: "/cma-slides-05-awardSpeech2-1960by1000.jpg",
+    alt: "Awards celebration slide five",
   },
 ];
 
