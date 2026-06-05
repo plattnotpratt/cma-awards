@@ -18,7 +18,7 @@ const HERO_SLIDES = [
     alt: "Awards celebration slide two",
   },
   {
-    image: "/cma-slides-03-awardSpeach-1960by1000.jpg",
+    image: "/cma-slides-03-awardSpeech-1960by1000.jpg",
     alt: "Awards celebration slide three",
   },
   {
