@@ -90,6 +90,7 @@ export default function AwardResultItem({ award, context = "" }) {
         <AwardResultLink award={award} />
         <span className={`resultBadge ${resultTone(award.placementType)}`}>{award.placementLabel}</span>
       </div>
+      {award.author ? <div className="muted">{award.author}</div> : null}
       {context ? <div className="browserResults__context">{context}</div> : null}
       {award.publisher ? <div className="muted">{award.publisher}</div> : null}
     </li>

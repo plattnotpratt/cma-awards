@@ -59,6 +59,7 @@ function normalizeSearchText(value) {
 function matchesSearch(award, query) {
   const searchableFields = [
     award.entryTitle,
+    award.author,
     award.publisher,
     award.program,
     award.division,
@@ -120,6 +121,7 @@ function summarizeAward(award) {
     return {
       id: award.id,
       entryTitle: award.name ?? "Untitled award",
+      author: award.author ?? null,
       publisher: null,
       categoryPath: award.categoryPath,
       program,
@@ -144,6 +146,7 @@ function summarizeAward(award) {
   return {
     id: viewModel.id,
     entryTitle: viewModel.entryTitle ?? viewModel.name,
+    author: viewModel.bookAuthor,
     publisher: viewModel.publisher,
     categoryPath: viewModel.categoryPath,
     program,

@@ -110,6 +110,7 @@ export function buildAwardViewModel(award, fallbackId) {
         ? round.judgeScorecardInfos[0].totalScore
         : null,
     entryTitle,
+    bookAuthor,
     publisher,
     publishingType: fieldValue(fv, "publishingType") ?? null,
     byline: fieldValue(fv, "bylineCredits") ?? null,

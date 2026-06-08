@@ -29,8 +29,9 @@ import os
 API_BASE_URL = "https://api.secure-platform.com/v2"
 DEFAULT_PAGE_SIZE = 100
 PLACED_TABLE = "placed_applications"
-BOOK_AWARDS_PROGRAM_ID = 55
+BOOK_AWARDS_PROGRAM_ID = 66
 BOOK_TITLE_ALIAS = "tittleOfBook"
+BOOK_AUTHOR_ALIAS = "titleOfBook"
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
@@ -236,6 +237,19 @@ def book_title(round_data: dict[str, Any]) -> str | None:
     return None
 
 
+def book_author(application: dict[str, Any], round_data: dict[str, Any]) -> str | None:
+    if application.get("programId") != BOOK_AWARDS_PROGRAM_ID:
+        return None
+
+    for field in round_data.get("submissionFieldValues") or []:
+        if field.get("alias") != BOOK_AUTHOR_ALIAS:
+            continue
+
+        return field_text_value(field)
+
+    return None
+
+
 def display_name(application: dict[str, Any], round_data: dict[str, Any]) -> str | None:
     name = application.get("name")
     if application.get("programId") != BOOK_AWARDS_PROGRAM_ID or not looks_like_email(name):
@@ -259,6 +273,7 @@ def build_row(application: dict[str, Any], fetched_at_utc: str) -> dict[str, Any
         "user_id": application.get("userId"),
         "email": application.get("email"),
         "name": display_name(application, round_data),
+        "author": book_author(application, round_data),
         "code": application.get("code"),
         "category_code": application.get("categoryCode"),
         "category_name": application.get("categoryName"),
@@ -281,6 +296,7 @@ def create_table(conn: sqlite3.Connection) -> None:
             user_id INTEGER,
             email TEXT,
             name TEXT,
+            author TEXT,
             code TEXT,
             category_code TEXT,
             category_name TEXT,
@@ -296,6 +312,19 @@ def create_table(conn: sqlite3.Connection) -> None:
     )
 
 
+def ensure_column(conn: sqlite3.Connection, column_name: str, column_type: str) -> None:
+    columns = {row[1] for row in conn.execute(f"PRAGMA table_info({PLACED_TABLE})")}
+    if column_name in columns:
+        return
+
+    conn.execute(f"ALTER TABLE {PLACED_TABLE} ADD COLUMN {column_name} {column_type}")
+
+
+def ensure_schema(conn: sqlite3.Connection) -> None:
+    create_table(conn)
+    ensure_column(conn, "author", "TEXT")
+
+
 def upsert_row(conn: sqlite3.Connection, row: dict[str, Any]) -> None:
     conn.execute(
         f"""
@@ -305,6 +334,7 @@ def upsert_row(conn: sqlite3.Connection, row: dict[str, Any]) -> None:
             user_id,
             email,
             name,
+            author,
             code,
             category_code,
             category_name,
@@ -321,6 +351,7 @@ def upsert_row(conn: sqlite3.Connection, row: dict[str, Any]) -> None:
             :user_id,
             :email,
             :name,
+            :author,
             :code,
             :category_code,
             :category_name,
@@ -337,6 +368,7 @@ def upsert_row(conn: sqlite3.Connection, row: dict[str, Any]) -> None:
             user_id = excluded.user_id,
             email = excluded.email,
             name = excluded.name,
+            author = excluded.author,
             code = excluded.code,
             category_code = excluded.category_code,
             category_name = excluded.category_name,
@@ -413,7 +445,7 @@ def main() -> int:
     failed = 0
 
     with sqlite3.connect(db_path) as conn:
-        create_table(conn)
+        ensure_schema(conn)
 
         for application_id in application_ids:
             processed += 1

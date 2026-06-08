@@ -32,6 +32,7 @@ const listAwards = db.prepare(`
     id,
     program_id AS programId,
     name,
+    author,
     category_name AS categoryName,
     category_path AS categoryPath,
     placement,
