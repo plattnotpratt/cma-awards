@@ -39,12 +39,52 @@ a:hover {
 
 .appShell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
+  flex: 1;
   max-width: 980px;
+  width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 16px;
+}
+
+.siteFooter {
+  padding: 8px 16px 20px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.siteFooter a {
+  position: relative;
+  color: var(--cma-navy-2);
+  font-weight: 700;
+}
+
+.siteFooter a:hover {
+  text-decoration: none;
+}
+
+.siteFooter a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -3px;
+  left: 0;
+  height: 2px;
+  background: rgba(14, 47, 68, 0.42);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.siteFooter a:hover::after,
+.siteFooter a:focus-visible::after {
+  background: var(--cma-navy-2);
+  transform: scaleX(1);
 }
 
 .row {

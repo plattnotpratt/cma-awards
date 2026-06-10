@@ -44,6 +44,7 @@ export default function AwardsList() {
   const divisionPanelRef = useRef(null);
   const categoryPanelRef = useRef(null);
   const resultsRef = useRef(null);
+  const pendingResultsScrollRef = useRef(false);
 
   const hierarchy = useMemo(() => buildAwardsHierarchy(awards, q), [awards, q]);
   const hasSearchQuery = q.trim().length > 0;
@@ -70,6 +71,13 @@ export default function AwardsList() {
     searchInputRef.current?.focus({ preventScroll: true });
   }, [status]);
 
+  useLayoutEffect(() => {
+    if (!pendingResultsScrollRef.current || !activeCategory) return;
+
+    pendingResultsScrollRef.current = false;
+    scrollToNextSection(resultsRef, { force: true });
+  }, [activeCategory]);
+
   function updateParams(next) {
     const merged = new URLSearchParams(searchParams);
 
@@ -81,8 +89,8 @@ export default function AwardsList() {
     setSearchParams(merged);
   }
 
-  function scrollToNextSection(ref) {
-    if (!window.matchMedia("(max-width: 900px)").matches) return;
+  function scrollToNextSection(ref, options = {}) {
+    if (!options.force && !window.matchMedia("(max-width: 900px)").matches) return;
 
     requestAnimationFrame(() => {
       ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -183,8 +191,8 @@ export default function AwardsList() {
               emptyLabel="Select a division to browse its categories."
               getCountLabel={(item) => `${item.awardCount} listed`}
               onSelect={(categoryName) => {
+                pendingResultsScrollRef.current = true;
                 updateParams({ category: categoryName });
-                scrollToNextSection(resultsRef);
               }}
               scrollable
             />

@@ -176,31 +176,35 @@ def normalize_placement(winner_types: list[Any] | None) -> str | None:
         return None
 
     mapping = {
-        "1st": "1st place",
-        "1st place": "1st place",
-        "first": "1st place",
-        "first place": "1st place",
-        "2nd": "2nd place",
-        "2nd place": "2nd place",
-        "second": "2nd place",
-        "second place": "2nd place",
-        "3rd": "3rd place",
-        "3rd place": "3rd place",
-        "third": "3rd place",
-        "third place": "3rd place",
-        "honorable mention": "honorable mention",
-        "honourable mention": "honorable mention",
+        "1st": "1st Place",
+        "1st place": "1st Place",
+        "first": "1st Place",
+        "first place": "1st Place",
+        "2nd": "2nd Place",
+        "2nd place": "2nd Place",
+        "second": "2nd Place",
+        "second place": "2nd Place",
+        "3rd": "3rd Place",
+        "3rd place": "3rd Place",
+        "third": "3rd Place",
+        "third place": "3rd Place",
+        "runner up": "Runner Up",
+        "runnerup": "Runner Up",
+        "honorable mention": "Honorable Mention",
+        "honourable mention": "Honorable Mention",
     }
     priority = {
-        "1st place": 1,
-        "2nd place": 2,
-        "3rd place": 3,
-        "honorable mention": 4,
+        "1st Place": 1,
+        "2nd Place": 2,
+        "3rd Place": 3,
+        "Runner Up": 4,
+        "Honorable Mention": 5,
     }
     placements = []
 
     for winner_type in winner_types:
         cleaned = " ".join(str(winner_type).strip().lower().replace("-", " ").split())
+        cleaned = re.sub(r"\s*\(\s*[12]\s*\)$", "", cleaned)
         placement = mapping.get(cleaned)
         if placement:
             placements.append(placement)
