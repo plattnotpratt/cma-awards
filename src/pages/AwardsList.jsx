@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ErrorState from "../components/ErrorState";
 import Loading from "../components/Loading";
@@ -33,6 +33,7 @@ const HERO_SLIDES = [
 
 export default function AwardsList() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0);
   const q = searchParams.get("q") ?? "";
   const activeProgramName = searchParams.get("program") ?? "";
   const activeDivisionName = searchParams.get("division") ?? "";
@@ -48,6 +49,16 @@ export default function AwardsList() {
 
   const hierarchy = useMemo(() => buildAwardsHierarchy(awards, q), [awards, q]);
   const hasSearchQuery = q.trim().length > 0;
+
+  useEffect(() => {
+    if (HERO_SLIDES.length < 2) return undefined;
+
+    const interval = window.setInterval(() => {
+      setActiveHeroSlide((current) => (current + 1) % HERO_SLIDES.length);
+    }, 6000);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   const activeProgram = useMemo(() => {
     if (!activeProgramName) return null;
@@ -107,7 +118,7 @@ export default function AwardsList() {
           <div className="browserHero__slider">
             {HERO_SLIDES.map((slide, index) => (
               <div
-                className="browserHero__slide"
+                className={`browserHero__slide${index === activeHeroSlide ? " browserHero__slide--active" : ""}`}
                 key={slide.alt}
                 style={slide.image ? { backgroundImage: `url(${slide.image})` } : undefined}
               >
@@ -115,6 +126,7 @@ export default function AwardsList() {
               </div>
             ))}
           </div>
+          <img className="browserHero__logo" src="/main_logo.png" alt="" />
         </div>
 
         <div className="browserHero__content">

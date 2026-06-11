@@ -8,17 +8,12 @@ export default function AwardDetails({ award }) {
   if (!award) return null;
 
   const shareUrl = typeof window === "undefined" ? "" : `${window.location.origin}${window.location.pathname}`;
-  const shareTitle = [award.entryTitle, award.winnerLabel].filter(Boolean).join(" - ") || "CMA Award Winner";
-  const shareSummary = [award.entryTitle, award.winnerLabel, award.categoryName, award.year]
-    .filter(Boolean)
-    .join(" | ");
-  const shareText = `${shareSummary}\n${shareUrl}`;
 
-  async function copyShareText() {
+  async function copyShareLink() {
     if (navigator.clipboard) {
       try {
-        await navigator.clipboard.writeText(shareText);
-        setShareStatus("Award details copied. Paste them into your post.");
+        await navigator.clipboard.writeText(shareUrl);
+        setShareStatus("Link copied. Paste it into your social post.");
         return true;
       } catch {
         // Fall through to the textarea copy path for older Safari/iOS contexts.
@@ -26,7 +21,7 @@ export default function AwardDetails({ award }) {
     }
 
     const textArea = document.createElement("textarea");
-    textArea.value = shareText;
+    textArea.value = shareUrl;
     textArea.setAttribute("readonly", "");
     textArea.style.position = "fixed";
     textArea.style.left = "-9999px";
@@ -40,40 +35,14 @@ export default function AwardDetails({ award }) {
       const copied = document.execCommand("copy");
       if (!copied) throw new Error("Copy command failed");
 
-      setShareStatus("Award details copied. Paste them into your post.");
+      setShareStatus("Link copied. Paste it into your social post.");
       return true;
     } catch {
-      setShareStatus("Sharing is not available in this browser. Copy the page URL from Safari's address bar.");
+      setShareStatus("Copy is not available in this browser. Copy the page URL from the address bar.");
       return false;
     } finally {
       textArea.remove();
     }
-  }
-
-  async function handleNativeShare() {
-    const shareData = { title: shareTitle, text: shareSummary, url: shareUrl };
-
-    if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
-      try {
-        await navigator.share(shareData);
-        setShareStatus("Share sheet opened.");
-        return;
-      } catch (error) {
-        if (error.name === "AbortError") return;
-      }
-    }
-
-    if (navigator.share) {
-      try {
-        await navigator.share({ url: shareUrl });
-        setShareStatus("Share sheet opened.");
-        return;
-      } catch (error) {
-        if (error.name === "AbortError") return;
-      }
-    }
-
-    await copyShareText();
   }
 
   return (
@@ -87,11 +56,9 @@ export default function AwardDetails({ award }) {
           <span className="awardGalleryCta__empty">Gallery unavailable</span>
         )}
       </div>
-      <div>
-      </div>
       <div className="awardShareLinks" aria-label="Share this award">
-        <button className="awardShareLinks__item" type="button" onClick={handleNativeShare}>
-          Share
+        <button className="awardShareLinks__item" type="button" onClick={copyShareLink}>
+          Copy Link
         </button>
         <Link className="awardShareLinks__item" to="/awards">
           Awards List

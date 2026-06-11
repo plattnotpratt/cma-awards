@@ -18,8 +18,10 @@ FROM deps AS api
 ENV NODE_ENV=production
 
 COPY server ./server
+COPY src/utils ./src/utils
 COPY scripts/data ./scripts/data
 COPY package*.json ./
+COPY --from=frontend-builder /app/dist ./dist
 
 EXPOSE 3001
 

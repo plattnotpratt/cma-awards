@@ -206,19 +206,11 @@ a:hover {
     linear-gradient(135deg, rgba(18, 62, 87, 0.98), rgba(28, 95, 122, 0.9) 48%, rgba(14, 47, 68, 0.98));
   background-position: center;
   background-size: cover;
-  animation: browserHeroFade 24s ease-in-out infinite;
+  transition: opacity 1000ms ease-in-out;
 }
 
-.browserHero__slide:nth-child(2) {
-  animation-delay: 6s;
-}
-
-.browserHero__slide:nth-child(3) {
-  animation-delay: 12s;
-}
-
-.browserHero__slide:nth-child(4) {
-  animation-delay: 18s;
+.browserHero__slide--active {
+  opacity: 1;
 }
 
 .browserHero__slide span {
@@ -229,21 +221,19 @@ a:hover {
   backdrop-filter: blur(10px);
 }
 
-@keyframes browserHeroFade {
-
-  0%,
-  100% {
-    opacity: 0;
-  }
-
-  6%,
-  25% {
-    opacity: 1;
-  }
-
-  31% {
-    opacity: 0;
-  }
+.browserHero__logo {
+  position: absolute;
+  top: clamp(12px, 2vw, 22px);
+  left: clamp(12px, 2vw, 22px);
+  z-index: 2;
+  width: clamp(56px, 6vw, 104px);
+  height: auto;
+  padding: clamp(6px, 0.8vw, 9px);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 30px rgba(11, 31, 42, 0.22);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
 }
 
 .browserHero__content {
