@@ -8,10 +8,11 @@
 
 .awardHero {
   position: relative;
+  box-sizing: border-box;
   min-height: 90vh;
-  padding: clamp(72px, 14vh, 140px) clamp(16px, 6vw, 80px) 80px;
+  padding: clamp(88px, 18vh, 160px) clamp(16px, 6vw, 80px) clamp(120px, 18vh, 180px);
   color: var(--stage-ink);
-  overflow: hidden;
+  overflow: visible;
   border-top-left-radius: 48px;
   border-top-right-radius: 48px;
   border-bottom-left-radius: 48px;
@@ -26,6 +27,8 @@
 .awardHero__backdrop {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
   pointer-events: none;
 }
 
@@ -99,8 +102,8 @@
 .categoryMarquee__title {
   margin: 0;
   font-size: clamp(28px, 4vw, 32px);
-  font-weight: 100;
-  /* font-family: TODO */
+  font-weight: 800;
+  font-family: "Inter", "Segoe UI", sans-serif;
   line-height: 1;
   color: var(--stage-ink);
   text-wrap: balance;
@@ -135,16 +138,18 @@
 }
 
 .recipientSpotlight__title {
-  font-size: clamp(30px, 6vw, 72px);
-  font-weight: 600;
-  font-family: "Inter", "Segoe UI", sans-serif;
-  line-height: 1.05;
+  font-size: clamp(40px, 6vw, 60px);
+  font-weight: 100;
+  line-height: 1.15;
   z-index: 1;
   color: var(--stage-ink);
 }
 
 .recipientSpotlight__org {
-  font-size: clamp(16px, 3vw, 24px);
+  margin-top: clamp(20px, 1vh, 27px);
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 800;
+  font-family: "Inter", "Segoe UI", sans-serif;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   opacity: 0.7;
@@ -322,6 +327,7 @@
 
 @media (max-width: 640px) {
   .awardHero {
+    padding-bottom: 128px;
     border-top-left-radius: 32px;
     border-top-right-radius: 32px;
     border-bottom-left-radius: 32px;
