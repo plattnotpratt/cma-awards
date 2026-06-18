@@ -84,6 +84,8 @@ function AwardResultLink({ award }) {
 }
 
 export default function AwardResultItem({ award, context = "" }) {
+  const organization = award.organization && award.organization !== award.publisher ? award.organization : null;
+
   return (
     <li>
       <div className="browserResults__titleRow">
@@ -91,6 +93,7 @@ export default function AwardResultItem({ award, context = "" }) {
         <span className={`resultBadge ${resultTone(award.placementType)}`}>{award.placementLabel}</span>
       </div>
       {award.author ? <div className="muted">{award.author}</div> : null}
+      {organization ? <div className="muted">{organization}</div> : null}
       {context ? <div className="browserResults__context">{context}</div> : null}
       {award.publisher ? <div className="muted">{award.publisher}</div> : null}
     </li>

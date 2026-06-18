@@ -32,6 +32,8 @@ PLACED_TABLE = "placed_applications"
 BOOK_AWARDS_PROGRAM_ID = 66
 BOOK_TITLE_ALIAS = "tittleOfBook"
 BOOK_AUTHOR_ALIAS = "titleOfBook"
+PUBLISHER_ALIASES = ("Flask5publisherName", "searchForAPublisher1", "publisher1")
+BYLINE_ALIAS = "bylineCredits"
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
@@ -223,7 +225,12 @@ def looks_like_email(value: Any) -> bool:
 
 
 def field_text_value(field: dict[str, Any]) -> str | None:
+    selected_value = field.get("selectedValue")
     value = field.get("firstValue") or field.get("value")
+
+    if value is None and isinstance(selected_value, dict):
+        value = selected_value.get("value")
+
     if value is None:
         return None
 
@@ -254,6 +261,29 @@ def book_author(application: dict[str, Any], round_data: dict[str, Any]) -> str 
     return None
 
 
+def field_value_by_alias(round_data: dict[str, Any], aliases: tuple[str, ...]) -> str | None:
+    for field in round_data.get("submissionFieldValues") or []:
+        if field.get("alias") not in aliases:
+            continue
+
+        value = field_text_value(field)
+        if value:
+            return value
+
+    return None
+
+
+def organization(application: dict[str, Any], round_data: dict[str, Any]) -> str | None:
+    publisher = field_value_by_alias(round_data, PUBLISHER_ALIASES)
+    byline = field_value_by_alias(round_data, (BYLINE_ALIAS,))
+    author = book_author(application, round_data)
+
+    if looks_like_email(application.get("name")) and author:
+        return author
+
+    return publisher or byline
+
+
 def display_name(application: dict[str, Any], round_data: dict[str, Any]) -> str | None:
     name = application.get("name")
     if application.get("programId") != BOOK_AWARDS_PROGRAM_ID or not looks_like_email(name):
@@ -278,6 +308,7 @@ def build_row(application: dict[str, Any], fetched_at_utc: str) -> dict[str, Any
         "email": application.get("email"),
         "name": display_name(application, round_data),
         "author": book_author(application, round_data),
+        "organization": organization(application, round_data),
         "code": application.get("code"),
         "category_code": application.get("categoryCode"),
         "category_name": application.get("categoryName"),
@@ -301,6 +332,7 @@ def create_table(conn: sqlite3.Connection) -> None:
             email TEXT,
             name TEXT,
             author TEXT,
+            organization TEXT,
             code TEXT,
             category_code TEXT,
             category_name TEXT,
@@ -327,6 +359,7 @@ def ensure_column(conn: sqlite3.Connection, column_name: str, column_type: str) 
 def ensure_schema(conn: sqlite3.Connection) -> None:
     create_table(conn)
     ensure_column(conn, "author", "TEXT")
+    ensure_column(conn, "organization", "TEXT")
 
 
 def upsert_row(conn: sqlite3.Connection, row: dict[str, Any]) -> None:
@@ -339,6 +372,7 @@ def upsert_row(conn: sqlite3.Connection, row: dict[str, Any]) -> None:
             email,
             name,
             author,
+            organization,
             code,
             category_code,
             category_name,
@@ -356,6 +390,7 @@ def upsert_row(conn: sqlite3.Connection, row: dict[str, Any]) -> None:
             :email,
             :name,
             :author,
+            :organization,
             :code,
             :category_code,
             :category_name,
@@ -373,6 +408,7 @@ def upsert_row(conn: sqlite3.Connection, row: dict[str, Any]) -> None:
             email = excluded.email,
             name = excluded.name,
             author = excluded.author,
+            organization = excluded.organization,
             code = excluded.code,
             category_code = excluded.category_code,
             category_name = excluded.category_name,
@@ -468,6 +504,8 @@ def main() -> int:
 
                 upsert_row(conn, row)
                 placed += 1
+                if placed % 50 == 0:
+                    conn.commit()
                 if args.verbose:
                     if row["name"] != application.get("name"):
                         print(f"{application_id}: placed ({row['placement']}), name replaced with book title")
