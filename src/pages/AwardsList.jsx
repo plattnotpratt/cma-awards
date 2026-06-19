@@ -49,6 +49,7 @@ export default function AwardsList() {
 
   const trimmedQuery = q.trim();
   const searchableQuery = trimmedQuery.length >= 3 ? q : "";
+  const hasTypedSearchQuery = trimmedQuery.length > 0;
   const hasPendingSearchQuery = trimmedQuery.length > 0 && trimmedQuery.length < 3;
   const hasSearchQuery = searchableQuery.trim().length > 0;
   const hierarchy = useMemo(() => buildAwardsHierarchy(awards, searchableQuery), [awards, searchableQuery]);
@@ -168,7 +169,7 @@ export default function AwardsList() {
       </div>
 
       <div className="browserWorkspace browserWorkspace--stacked">
-        {!hasSearchQuery ? (
+        {!hasTypedSearchQuery ? (
           <div className="browserGrid browserGrid--selectors">
             <HierarchyPanel
               panelRef={programPanelRef}
