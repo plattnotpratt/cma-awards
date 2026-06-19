@@ -47,8 +47,11 @@ export default function AwardsList() {
   const resultsRef = useRef(null);
   const pendingResultsScrollRef = useRef(false);
 
-  const hierarchy = useMemo(() => buildAwardsHierarchy(awards, q), [awards, q]);
-  const hasSearchQuery = q.trim().length > 0;
+  const trimmedQuery = q.trim();
+  const searchableQuery = trimmedQuery.length >= 3 ? q : "";
+  const hasPendingSearchQuery = trimmedQuery.length > 0 && trimmedQuery.length < 3;
+  const hasSearchQuery = searchableQuery.trim().length > 0;
+  const hierarchy = useMemo(() => buildAwardsHierarchy(awards, searchableQuery), [awards, searchableQuery]);
 
   useEffect(() => {
     if (HERO_SLIDES.length < 2) return undefined;
@@ -211,7 +214,16 @@ export default function AwardsList() {
           </div>
         ) : null}
 
-        {hasSearchQuery ? (
+        {hasPendingSearchQuery ? (
+          <section className="browserResults card" ref={resultsRef}>
+            <div className="browserResults__header">
+              <div>
+                <h2>Search results</h2>
+                <p className="muted">Enter at least 3 characters to search.</p>
+              </div>
+            </div>
+          </section>
+        ) : hasSearchQuery ? (
           <SearchResults hierarchy={hierarchy} query={q} resultsRef={resultsRef} />
         ) : activeCategory ? (
           <CategoryResults category={activeCategory} resultsRef={resultsRef} />
