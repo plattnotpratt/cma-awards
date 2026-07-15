@@ -539,10 +539,6 @@ a:hover {
   padding-right: 0;
 }
 
-.awardResultLink--marquee .awardResultLink__fallback {
-  padding-right: 190px;
-}
-
 .awardResultLink--marquee::after {
   content: "";
   position: absolute;
@@ -569,50 +565,21 @@ a:hover {
   opacity: 1;
 }
 
-.awardResultLink__track {
-  display: inline-flex;
-  gap: 48px;
-  width: max-content;
-  opacity: 0;
-  transform: translateX(0);
-  transition: opacity 120ms ease;
-  will-change: opacity, transform;
-}
-
 .awardResultLink__fallback {
-  position: absolute;
-  inset: 0;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  transition: opacity 120ms ease;
+  transform: translateX(0);
+  transition: transform 150ms ease;
+  will-change: transform;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
-.awardResultLink__track {
-  text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.75),
-    0 12px 24px rgba(11, 31, 42, 0.12);
-}
-
-.awardResultLink__track span {
-  display: inline-block;
-  min-width: max-content;
-}
-
-.awardResultLink--active .awardResultLink__fallback,
-.awardResultLink--leaving .awardResultLink__fallback {
-  opacity: 0;
-}
-
-.awardResultLink--active .awardResultLink__track {
-  opacity: 1;
-  animation: awardTitleMarquee 7s linear infinite;
-}
-
-.awardResultLink--leaving .awardResultLink__track {
-  opacity: 0;
-  animation: awardTitleMarquee 7s linear infinite;
+.awardResultLink--active .awardResultLink__fallback {
+  overflow: visible;
+  text-overflow: clip;
+  animation: awardTitleMarquee 7s ease-in-out infinite alternate;
 }
 
 .resultBadge {
@@ -713,8 +680,7 @@ a:hover {
   }
 
   .awardResultLink__viewport,
-  .awardResultLink--marquee .awardResultLink__viewport,
-  .awardResultLink--marquee .awardResultLink__fallback {
+  .awardResultLink--marquee .awardResultLink__viewport {
     padding-right: 0;
   }
 
@@ -762,8 +728,7 @@ a:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .awardResultLink--active .awardResultLink__track,
-  .awardResultLink--leaving .awardResultLink__track {
+  .awardResultLink--active .awardResultLink__fallback {
     animation: none;
   }
 }

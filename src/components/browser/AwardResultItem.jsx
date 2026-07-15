@@ -24,9 +24,9 @@ function AwardResultLink({ award }) {
 
       const badgeReserve = window.matchMedia("(max-width: 640px)").matches ? 0 : 190;
       const visibleWidth = viewport.clientWidth - badgeReserve;
-      const overflows = title.scrollWidth - visibleWidth > 8;
-      const nextDistance = overflows ? Math.ceil(title.scrollWidth + 48) : 0;
-      setMarqueeDistance(overflows ? nextDistance : 0);
+      const overflowDistance = title.scrollWidth - visibleWidth;
+      const overflows = overflowDistance > 8;
+      setMarqueeDistance(overflows ? Math.ceil(overflowDistance) : 0);
       if (!overflows) setMarqueePhase("idle");
     }
 
@@ -73,18 +73,27 @@ function AwardResultLink({ award }) {
       onMouseLeave={stopMarquee}
     >
       <span className="awardResultLink__viewport" ref={viewportRef}>
-        <span className="awardResultLink__fallback">{award.entryTitle}</span>
-        <span className="awardResultLink__track" aria-hidden="true">
-          <span ref={titleRef}>{award.entryTitle}</span>
-          <span>{award.entryTitle}</span>
-        </span>
+        <span className="awardResultLink__fallback" ref={titleRef}>{award.entryTitle}</span>
       </span>
     </Link>
   );
 }
 
 export default function AwardResultItem({ award, context = "" }) {
-  const organization = award.organization && award.organization !== award.publisher ? award.organization : null;
+  const seenDetails = new Set();
+  function uniqueDetail(detail) {
+    if (!detail) return null;
+
+    const normalizedDetail = detail.trim().toLocaleLowerCase();
+    if (!normalizedDetail || seenDetails.has(normalizedDetail)) return null;
+
+    seenDetails.add(normalizedDetail);
+    return detail;
+  }
+
+  const author = uniqueDetail(award.author);
+  const organization = uniqueDetail(award.organization);
+  const publisher = uniqueDetail(award.publisher);
 
   return (
     <li>
@@ -92,10 +101,9 @@ export default function AwardResultItem({ award, context = "" }) {
         <AwardResultLink award={award} />
         <span className={`resultBadge ${resultTone(award.placementType)}`}>{award.placementLabel}</span>
       </div>
-      {award.author ? <div className="muted">{award.author}</div> : null}
-      {organization ? <div className="muted">{organization}</div> : null}
+      {[author, organization].map((detail) => detail ? <div className="muted" key={detail}>{detail}</div> : null)}
       {context ? <div className="browserResults__context">{context}</div> : null}
-      {award.publisher ? <div className="muted">{award.publisher}</div> : null}
+      {publisher ? <div className="muted">{publisher}</div> : null}
     </li>
   );
 }
